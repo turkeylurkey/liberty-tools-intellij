@@ -81,7 +81,6 @@ public class JakartaLanguageClient extends LanguageClientImpl implements Jakarta
 
   @Override
   public void sourceUpdated(List<Pair<Module, VirtualFile>> sources) {
-    int i = 0;
     // not needed for Jakarta LS
   }
 }

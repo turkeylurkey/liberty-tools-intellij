@@ -21,6 +21,8 @@ import com.intellij.psi.*;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.annotations.AnnotationDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.beanvalidation.BeanValidationDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.cdi.ManagedBeanDiagnosticsCollector;
+import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.codeaction.CodeActionHandler;
+import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.commons.JakartaJavaCodeActionParams;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.di.DependencyInjectionDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.jax_rs.Jax_RSClassDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.jax_rs.ResourceMethodDiagnosticsCollector;
@@ -33,6 +35,7 @@ import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.servlet.ListenerDiagn
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.servlet.ServletDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4jakarta.lsp4ij.websocket.WebSocketDiagnosticsCollector;
 import com.langserver.devtools.intellij.lsp4mp4ij.psi.core.utils.IPsiUtils;
+import org.eclipse.lsp4jakarta.commons.JakartaDiagnosticsParams;
 import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4mp.commons.*;
 import org.slf4j.Logger;
@@ -43,13 +46,13 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 
-import org.eclipse.lsp4jakarta.commons.JakartaDiagnosticsParams;
-
 public class PropertiesManagerForJakarta {
 
     private static final Logger LOGGER = LoggerFactory.getLogger(PropertiesManagerForJakarta.class);
 
     private static final PropertiesManagerForJakarta INSTANCE = new PropertiesManagerForJakarta();
+
+    private final CodeActionHandler codeActionHandler;
 
     public static PropertiesManagerForJakarta getInstance() {
         return INSTANCE;
@@ -72,6 +75,8 @@ public class PropertiesManagerForJakarta {
         diagnosticsCollectors.add(new DependencyInjectionDiagnosticsCollector());
         diagnosticsCollectors.add(new JsonpDiagnosticCollector());
         diagnosticsCollectors.add(new WebSocketDiagnosticsCollector());
+
+        this.codeActionHandler = new CodeActionHandler();
     }
 
     /**
@@ -128,6 +133,10 @@ public class PropertiesManagerForJakarta {
      */
     private static PsiFile resolveTypeRoot(String uri, IPsiUtils utils) {
         return utils.resolveCompilationUnit(uri);
+    }
+
+    public List<CodeAction> getCodeAction(JakartaJavaCodeActionParams params, JDTUtils utils) {
+        return codeActionHandler.codeAction(params, utils);
     }
 
 }
