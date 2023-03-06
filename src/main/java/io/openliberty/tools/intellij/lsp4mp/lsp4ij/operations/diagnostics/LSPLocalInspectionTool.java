@@ -11,10 +11,7 @@
  ******************************************************************************/
 package io.openliberty.tools.intellij.lsp4mp.lsp4ij.operations.diagnostics;
 
-import com.intellij.codeInspection.InspectionManager;
-import com.intellij.codeInspection.LocalInspectionTool;
-import com.intellij.codeInspection.ProblemDescriptor;
-import com.intellij.codeInspection.ProblemHighlightType;
+import com.intellij.codeInspection.*;
 import com.intellij.openapi.editor.Editor;
 import com.intellij.openapi.editor.markup.RangeHighlighter;
 import com.intellij.openapi.util.TextRange;
@@ -33,7 +30,6 @@ import org.jetbrains.annotations.Nullable;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -81,8 +77,18 @@ public class LSPLocalInspectionTool extends LocalInspectionTool {
                             } else {
                                 element = PsiUtilCore.getElementAtOffset(file, highlighter.getStartOffset());
                             }
-                            ProblemHighlightType highlightType = getHighlightType(((Diagnostic) highlighter.getErrorStripeTooltip()).getSeverity());
-                            problemDescriptors.add(manager.createProblemDescriptor(element, ((Diagnostic) highlighter.getErrorStripeTooltip()).getMessage(), true, highlightType, isOnTheFly));
+                            Diagnostic diagnostic = getDiagnostic(highlighter.getErrorStripeTooltip());
+                            ProblemHighlightType highlightType = getHighlightType(diagnostic.getSeverity());
+                            LocalQuickFix[] quickFixes = LSPDiagnosticsToMarkers.getQuickFixes(editor, diagnostic);
+                            ProblemDescriptor pd =
+                                manager.createProblemDescriptor(
+                                        element,
+                                        diagnostic.getMessage(),
+                                        true,
+                                        highlightType,
+                                        isOnTheFly,
+                                        quickFixes);
+                            problemDescriptors.add(pd);
                         }
                     }
                 }
@@ -107,5 +113,12 @@ public class LSPLocalInspectionTool extends LocalInspectionTool {
                 return ProblemHighlightType.WARNING;
         }
         return ProblemHighlightType.INFORMATION;
+    }
+
+    private Diagnostic getDiagnostic(Object o) {
+        if (o instanceof Diagnostic) {
+            return (Diagnostic) o;
+        }
+        return null;
     }
 }
