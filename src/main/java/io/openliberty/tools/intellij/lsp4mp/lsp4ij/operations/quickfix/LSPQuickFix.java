@@ -59,7 +59,7 @@ public class LSPQuickFix implements LocalQuickFix {
                         .forEach(wrapper -> {
                             try {
                                 CompletableFuture<LanguageServer> serverFuture = wrapper.getInitializedServer();
-                                LOGGER.warn("QuickFix apply waiting for LSP to start");
+                                LOGGER.warn("QuickFix apply waiting for LSP to start"); // TODO: delete
                                 LanguageServer server = serverFuture.get(); // wait for server to start
                                 if (fix.isLeft()) {
                                     executeCommand(server, fix.getLeft());
@@ -81,7 +81,7 @@ public class LSPQuickFix implements LocalQuickFix {
     private void executeCommand(LanguageServer server, Command command) throws ExecutionException, InterruptedException {
         var params = new ExecuteCommandParams(command.getCommand(), command.getArguments());
         CompletableFuture<Object> result = server.getWorkspaceService().executeCommand(params);
-        LOGGER.warn("QuickFix apply 1, wait for result=" + result.get());
+        LOGGER.warn("QuickFix apply 1, wait for result=" + result.get()); // TODO: delete
     }
 
     private void executeCodeAction(LanguageServer server, CodeAction action) throws ExecutionException, InterruptedException {
@@ -96,24 +96,7 @@ public class LSPQuickFix implements LocalQuickFix {
         context.setTriggerKind(CodeActionTriggerKind.Invoked);
         param.setContext(context);
         CompletableFuture<List<Either<Command, CodeAction>>> result = server.getTextDocumentService().codeAction(param);
-        LOGGER.warn("QuickFix apply 2, wait for result=" + result.get());
+        LOGGER.warn("QuickFix apply 2, wait for result=" + result.get()); // TODO: delete
     }
-//
-//    private String getCommand(Object param) {
-//        if (param instanceof Command) {
-//            return ((Command) param).getCommand();
-//        } else if (param instanceof Either<?, ?>) {
-//            var v = (Either<Command, CodeAction>) param;
-//            if (v.isLeft()) {
-//                return v.getLeft().getCommand();
-//            } else {
-//                if (v.getRight().getCommand() != null) {
-//                    return v.getRight().getCommand().getCommand();
-//                }
-//                return v.getRight().getEdit().toString();
-//            }
-//        }
-//        return null;
-//    }
 
 }
