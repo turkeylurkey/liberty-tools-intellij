@@ -28,14 +28,7 @@ import com.intellij.openapi.vfs.LocalFileSystem;
 import com.intellij.openapi.vfs.VfsUtilCore;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.PsiElement;
-import org.eclipse.lsp4j.CompletionParams;
-import org.eclipse.lsp4j.HoverParams;
-import org.eclipse.lsp4j.Position;
-import org.eclipse.lsp4j.TextDocumentIdentifier;
-import org.eclipse.lsp4j.TextDocumentPositionParams;
-import org.eclipse.lsp4j.TextEdit;
-import org.eclipse.lsp4j.WorkspaceEdit;
-import org.eclipse.lsp4j.WorkspaceFolder;
+import org.eclipse.lsp4j.*;
 import org.eclipse.lsp4j.jsonrpc.messages.Either;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -73,6 +66,20 @@ public class LSPIJUtils {
 
     public static HoverParams toHoverParams(int offset, Document document) {
         return toTextDocumentPositionParamsCommon(new HoverParams(), offset, document);
+    }
+
+    public static CodeActionParams toCodeActionParams(Range range, Document document, List<Diagnostic> diagnostics) {
+        CodeActionParams param = new CodeActionParams();
+        URI uri = toUri(document);
+        TextDocumentIdentifier docId = new TextDocumentIdentifier();
+        if (uri != null) {
+            docId.setUri(uri.toString());
+        }
+        param.setTextDocument(docId);
+        param.setRange(range);
+        CodeActionContext context = new CodeActionContext(diagnostics);
+        param.setContext(context);
+        return param;
     }
 
     public static URI toUri(File file) {
