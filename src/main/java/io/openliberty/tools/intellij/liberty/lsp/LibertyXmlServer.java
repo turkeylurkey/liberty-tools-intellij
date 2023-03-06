@@ -60,6 +60,10 @@ public class LibertyXmlServer extends ProcessStreamConnectionProvider {
     //            "xml": {
     //                "trace": {
     //                    "server": "verbose"
+    //                },
+    //                "logs": {
+    //                    "client": "true",
+    //                    "file": "/Users/pg/workspace/lemminx.log"
     //                }
     //            },
     //        "extendedClientCapabilities": {
@@ -72,10 +76,14 @@ public class LibertyXmlServer extends ProcessStreamConnectionProvider {
         Map<String, Object> settings = new HashMap<>();
         Map<String, Object> xml = new HashMap<>();
         Map<String, Object> trace = new HashMap<>();
+        Map<String, Object> logs = new HashMap<>();
         Map<String, Object> extendedClientCapabilities = new HashMap<>();
 
         trace.put("server", "verbose");
+        // logs.put("client", "true");
+        // logs.put("file", "/tmp/lsp4xml.log");
         xml.put("trace", trace); // TODO enable tracing so LemMinX stdout and stderr are redirected to IntelliJ log
+        // xml.put("logs", logs); // send logs to a file
         settings.put("xml", xml);
         root.put("settings", settings);
         // Additional configuration
