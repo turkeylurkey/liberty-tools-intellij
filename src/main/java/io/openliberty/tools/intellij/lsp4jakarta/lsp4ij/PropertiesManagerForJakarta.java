@@ -229,6 +229,22 @@ public class PropertiesManagerForJakarta {
 
     }
 
+    private static int offsetOfFirstNonAnnotationModifier(PsiElement node) {
+        return 0;
+    }
+
+    /**
+     * Searches through the AST to figure out the following:
+     * <ul>
+     * <li>If an annotation were to be placed at the completionOffset, what type of
+     * node would it be annotating?</li>
+     * <li>Is the completionOffset within the list of annotations before a
+     * member?</li>
+     * </ul>
+     */
+    private static class FindWhatsBeingAnnotatedASTVisitor {
+    }
+
     private static String getJavaCursorPrefix(JakartaJavaCompletionParams params, PsiJavaFile typeRoot) {
         Position completionPosition = params.getPosition();
 
