@@ -12,6 +12,7 @@
 
 package io.openliberty.tools.intellij.lsp4jakarta.lsp4ij;
 
+import com.intellij.lang.jvm.JvmTypeDeclaration;
 import com.intellij.openapi.application.ApplicationManager;
 import com.intellij.openapi.module.Module;
 import com.intellij.openapi.project.DumbService;
@@ -40,7 +41,7 @@ import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.websocket.WebSocketDiagn
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.core.utils.IPsiUtils;
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.internal.core.ls.PsiUtilsLSImpl;
 import org.eclipse.lsp4j.*;
-import org.eclipse.lsp4jakarta.commons.JakartaJavaCodeActionParams;
+import org.eclipse.lsp4jakarta.commons.*;
 import org.eclipse.lsp4mp.commons.*;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -51,8 +52,6 @@ import java.nio.file.Path;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
-
-import org.eclipse.lsp4jakarta.commons.JakartaDiagnosticsParams;
 
 public class PropertiesManagerForJakarta {
 
@@ -194,8 +193,51 @@ public class PropertiesManagerForJakarta {
     }
 
     /**
-     * Given the uri returns a {@link PsiFile}. May return null if it can not
-     * associate the uri with a Java file ot class file.
+     * Returns the cursor context for the given file and cursor position.
+     *
+     * @param params  the completion params that provide the file and cursor
+     *                position to get the context for
+     * @return the cursor context for the given file and cursor position
+     */
+    public JavaCursorContextResult javaCursorContext(JakartaJavaCompletionParams params, Project project) {
+        String uri = params.getUri();
+        PsiFile typeRoot = resolveTypeRoot(uri, project);
+
+        if (!(typeRoot instanceof PsiJavaFile)) {
+            return new JavaCursorContextResult(JavaCursorContextKind.IN_EMPTY_FILE, "");
+        }
+
+        JavaCursorContextKind kind = getJavaCursorContextKind(params, (PsiJavaFile)typeRoot, project);
+        String prefix = getJavaCursorPrefix(params, (PsiJavaFile)typeRoot);
+
+        return new JavaCursorContextResult(kind, prefix);
+    }
+
+    private static JavaCursorContextKind getJavaCursorContextKind(JakartaJavaCompletionParams params,
+                                                                  PsiJavaFile typeRoot, Project project) {
+        if (typeRoot.getClasses() == null) {
+            return JavaCursorContextKind.IN_EMPTY_FILE;
+        }
+
+        IPsiUtils utils = PsiUtilsLSImpl.getInstance(project);
+        Position completionPosition = params.getPosition();
+        int completionOffset = utils.toOffset(typeRoot, completionPosition.getLine(),
+                completionPosition.getCharacter());
+
+        PsiElement node = typeRoot.findElementAt(completionOffset);
+        return JavaCursorContextKind.NONE;
+
+    }
+
+    private static String getJavaCursorPrefix(JakartaJavaCompletionParams params, PsiJavaFile typeRoot) {
+        Position completionPosition = params.getPosition();
+
+        return "";
+    }
+
+    /**
+     * Given the uri return a {@link PsiFile}. May return null if it can not
+     * associate the uri with a Java file or class file.
      *
      * @param uri
      * @param utils   JDT LS utilities
