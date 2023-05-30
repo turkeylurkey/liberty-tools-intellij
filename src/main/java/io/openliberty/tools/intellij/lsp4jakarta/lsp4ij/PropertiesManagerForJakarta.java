@@ -22,7 +22,11 @@ import com.intellij.openapi.util.Computable;
 import com.intellij.openapi.util.ThrowableComputable;
 import com.intellij.openapi.vfs.VirtualFile;
 import com.intellij.psi.*;
+import com.intellij.psi.impl.source.tree.java.AnnotationMethodElement;
+import com.intellij.psi.impl.source.tree.java.EnumConstantElement;
 import com.intellij.psi.search.GlobalSearchScope;
+import com.intellij.psi.tree.IElementType;
+import com.intellij.psi.util.PsiTreeUtil;
 import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.annotations.AnnotationDiagnosticsCollector;
 import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.beanvalidation.BeanValidationDiagnosticsCollector;
 import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.cdi.ManagedBeanDiagnosticsCollector;
@@ -108,7 +112,7 @@ public class PropertiesManagerForJakarta {
     }
 
     private void collectDiagnostics(String uri, IPsiUtils utils, DocumentFormat documentFormat, List<Diagnostic> diagnostics) {
-        PsiFile typeRoot = ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () -> resolveTypeRoot(uri, utils));
+        PsiFile typeRoot = resolveTypeRoot(uri, utils);
         if (typeRoot == null) {
             return;
         }
@@ -156,7 +160,7 @@ public class PropertiesManagerForJakarta {
 
         // FOR NOW, append package name and class name to the list in order for LS to
         // resolve ${packagename} and ${classname} variables
-        PsiFile typeRoot = ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () -> resolveTypeRoot(uri, project));
+        PsiFile typeRoot = resolveTypeRoot(uri, project);
         DumbService.getInstance(project).runReadActionInSmartMode(() -> {
             String className = "className";
             String packageName = "packageName";
@@ -202,35 +206,94 @@ public class PropertiesManagerForJakarta {
     public JavaCursorContextResult javaCursorContext(JakartaJavaCompletionParams params, Project project) {
         String uri = params.getUri();
         PsiFile typeRoot = resolveTypeRoot(uri, project);
+        JavaCursorContextResult result = ApplicationManager.getApplication().runReadAction((Computable<JavaCursorContextResult>) () -> {
+            if (!(typeRoot instanceof PsiJavaFile)) {
+                return new JavaCursorContextResult(JavaCursorContextKind.IN_EMPTY_FILE, "");
+            }
 
-        if (!(typeRoot instanceof PsiJavaFile)) {
-            return new JavaCursorContextResult(JavaCursorContextKind.IN_EMPTY_FILE, "");
-        }
+            JavaCursorContextKind kind = getJavaCursorContextKind(params, (PsiJavaFile)typeRoot);
+            String prefix = getJavaCursorPrefix(params, (PsiJavaFile)typeRoot);
 
-        JavaCursorContextKind kind = getJavaCursorContextKind(params, (PsiJavaFile)typeRoot, project);
-        String prefix = getJavaCursorPrefix(params, (PsiJavaFile)typeRoot);
-
-        return new JavaCursorContextResult(kind, prefix);
-    }
+            return new JavaCursorContextResult(kind, prefix);
+        });
+        return result;
+     }
 
     private static JavaCursorContextKind getJavaCursorContextKind(JakartaJavaCompletionParams params,
-                                                                  PsiJavaFile typeRoot, Project project) {
+                                                                  PsiJavaFile typeRoot) {
         if (typeRoot.getClasses() == null) {
             return JavaCursorContextKind.IN_EMPTY_FILE;
         }
 
-        IPsiUtils utils = PsiUtilsLSImpl.getInstance(project);
+        IPsiUtils utils = PsiUtilsLSImpl.getInstance(typeRoot.getProject());
         Position completionPosition = params.getPosition();
         int completionOffset = utils.toOffset(typeRoot, completionPosition.getLine(),
                 completionPosition.getCharacter());
 
         PsiElement node = typeRoot.findElementAt(completionOffset);
-        return JavaCursorContextKind.NONE;
 
+        PsiElement oldNode = node;
+        while (node != null && (!(node instanceof PsiModifierListOwner)
+                || offsetOfFirstNonAnnotationModifier((PsiModifierListOwner) node) >= completionOffset)) {
+            PsiElement parent = node.getParent();
+            if ((parent instanceof PsiMethod) || // cursor in 'public String method(int arg)'
+                    (parent instanceof PsiField) || // cursor in 'static int field;'
+                    (parent instanceof EnumConstantElement) || // cursor after '{' in 'enum eType { EnumConst,' ...
+                    (parent instanceof AnnotationMethodElement)) { // cursor after '{' in '@interface aType { String f();' ...
+                if (!(PsiTreeUtil.getParentOfType(node, PsiAnnotation.class) != null) &&
+                        node.getTextRange().getStartOffset() < completionOffset) {
+                    return JavaCursorContextKind.NONE;
+                }
+            }
+            oldNode = node;
+            node = parent;
+        }
+        return JavaCursorContextKind.IN_EMPTY_FILE;
+
+//        if (node == null) {
+//            // we are likely before or after the type root class declaration
+//            FindWhatsBeingAnnotatedASTVisitor visitor = new FindWhatsBeingAnnotatedASTVisitor(completionOffset, false);
+//            oldNode.accept(visitor);
+//            switch (visitor.getAnnotatedNodeType()) {
+//                case ASTNode.TYPE_DECLARATION:
+//                case ASTNode.ANNOTATION_TYPE_DECLARATION:
+//                case ASTNode.ENUM_DECLARATION:
+//                case ASTNode.RECORD_DECLARATION: {
+//                    if (visitor.isInAnnotations()) {
+//                        return JavaCursorContextKind.IN_CLASS_ANNOTATIONS;
+//                    }
+//                    return JavaCursorContextKind.BEFORE_CLASS;
+//                }
+//                default:
+//                    return JavaCursorContextKind.NONE;
+//            }
+//        }
+
+//        AbstractTypeDeclaration typeDeclaration = (AbstractTypeDeclaration) node;
+//        FindWhatsBeingAnnotatedASTVisitor visitor = new FindWhatsBeingAnnotatedASTVisitor(completionOffset);
+//        typeDeclaration.accept(visitor);
+//        switch (visitor.getAnnotatedNodeType()) {
+//            case ASTNode.TYPE_DECLARATION:
+//            case ASTNode.ANNOTATION_TYPE_DECLARATION:
+//            case ASTNode.ENUM_DECLARATION:
+//            case ASTNode.RECORD_DECLARATION:
+//                return visitor.isInAnnotations() ? JavaCursorContextKind.IN_CLASS_ANNOTATIONS
+//                        : JavaCursorContextKind.BEFORE_CLASS;
+//            case ASTNode.ANNOTATION_TYPE_MEMBER_DECLARATION:
+//            case ASTNode.METHOD_DECLARATION:
+//                return visitor.isInAnnotations() ? JavaCursorContextKind.IN_METHOD_ANNOTATIONS
+//                        : JavaCursorContextKind.BEFORE_METHOD;
+//            case ASTNode.FIELD_DECLARATION:
+//            case ASTNode.ENUM_CONSTANT_DECLARATION:
+//                return visitor.isInAnnotations() ? JavaCursorContextKind.IN_FIELD_ANNOTATIONS
+//                        : JavaCursorContextKind.BEFORE_FIELD;
+//            default:
+//                return JavaCursorContextKind.IN_CLASS;
+//        }
     }
 
-    private static int offsetOfFirstNonAnnotationModifier(PsiElement node) {
-        return 0;
+    private static int offsetOfFirstNonAnnotationModifier(PsiModifierListOwner node) {
+        return node.getTextRange().getStartOffset();
     }
 
     /**
@@ -247,8 +310,24 @@ public class PropertiesManagerForJakarta {
 
     private static String getJavaCursorPrefix(JakartaJavaCompletionParams params, PsiJavaFile typeRoot) {
         Position completionPosition = params.getPosition();
+        IPsiUtils utils = PsiUtilsLSImpl.getInstance(typeRoot.getProject());
+        int completionOffset = utils.toOffset(typeRoot, completionPosition.getLine(),
+                completionPosition.getCharacter());
 
-        return "";
+        String fileContents = null;
+        try {
+            byte[] b = typeRoot.getVirtualFile().contentsToByteArray();
+            fileContents = new String(b, typeRoot.getVirtualFile().getCharset());
+        } catch (IOException e) {
+            return "";
+        }
+        if (fileContents == null) {
+            return "";
+        }
+        int i;
+        for (i = completionOffset; i > 0 && !Character.isWhitespace(fileContents.charAt(i - 1)); i--) {
+        }
+        return fileContents.substring(i, completionOffset);
     }
 
     /**
@@ -260,12 +339,12 @@ public class PropertiesManagerForJakarta {
      * @return compilation unit
      */
     private static PsiFile resolveTypeRoot(String uri, IPsiUtils utils) {
-        return utils.resolveCompilationUnit(uri);
+        return ApplicationManager.getApplication().runReadAction((Computable<PsiFile>) () -> utils.resolveCompilationUnit(uri));
     }
 
     private static PsiFile resolveTypeRoot(String uri, Project project) {
         IPsiUtils utils = PsiUtilsLSImpl.getInstance(project);
-        return utils.resolveCompilationUnit(uri);
+        return resolveTypeRoot(uri, utils);
     }
 
     public List<CodeAction> getCodeAction(JakartaJavaCodeActionParams params, IPsiUtils utils) {
