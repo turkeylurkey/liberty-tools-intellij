@@ -59,7 +59,10 @@ public class JakartaLanguageClient extends LanguageClientImpl implements Jakarta
   @Override
   public CompletableFuture<JavaCursorContextResult> getJavaCursorContext(JakartaJavaCompletionParams params) {
     return runAsBackground("Computing Java cursor context",
-            () -> PropertiesManagerForJakarta.getInstance().javaCursorContext(params, getProject()));
+            () -> {
+              IPsiUtils utils = PsiUtilsLSImpl.getInstance(getProject());
+              return PropertiesManagerForJakarta.getInstance().javaCursorContext(params, utils);
+            });
   }
 
   // Support the message "jakarta/java/diagnostics"
