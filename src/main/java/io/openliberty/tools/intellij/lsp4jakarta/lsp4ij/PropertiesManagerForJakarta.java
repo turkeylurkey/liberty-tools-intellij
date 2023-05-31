@@ -255,6 +255,19 @@ public class PropertiesManagerForJakarta {
 
         if (parent instanceof PsiMethod) {
             PsiMethod psiMethod = (PsiMethod) parent;
+            PsiType u1 = psiMethod.getReturnType();
+            PsiElement u2 = psiMethod.getReturnTypeElement();
+            if (u2 != null) {
+                int u3 = psiMethod.getReturnTypeElement().getTextOffset();
+                ++u3;
+            }
+            PsiAnnotation[] a = psiMethod.getAnnotations();
+            if (a.length > 0) {
+                int endOfAnnotations = a[a.length-1].getTextRange().getEndOffset();
+                if (completionOffset <= endOfAnnotations) {
+                    return JavaCursorContextKind.IN_METHOD_ANNOTATIONS;
+                }
+            }
             if (psiMethod.getReturnType() != null &&  psiMethod.getReturnTypeElement() != null && completionOffset <= psiMethod.getReturnTypeElement().getTextOffset()) {
                 return JavaCursorContextKind.BEFORE_METHOD;
             }
@@ -263,7 +276,18 @@ public class PropertiesManagerForJakarta {
 
         if (parent instanceof PsiField) {
             PsiField psiField = (PsiField) parent;
+            PsiAnnotation[] a = psiField.getAnnotations();
+            if (a.length > 0) {
+                int endOfAnnotations = a[a.length-1].getTextRange().getEndOffset();
+                if (completionOffset <= endOfAnnotations) {
+                    return JavaCursorContextKind.IN_FIELD_ANNOTATIONS;
+                }
+            }
             PsiTypeElement fieldType = psiField.getTypeElement();
+            if (fieldType != null) {
+                int u4 = fieldType.getTextOffset();
+                ++u4;
+            }
             if (fieldType != null && completionOffset <= fieldType.getTextOffset()) {
                 return JavaCursorContextKind.BEFORE_FIELD;
             }

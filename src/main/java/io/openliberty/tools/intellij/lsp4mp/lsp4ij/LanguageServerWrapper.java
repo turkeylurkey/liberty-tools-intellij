@@ -348,9 +348,9 @@ public class LanguageServerWrapper {
         } else if (LOGGER.isDebugEnabled()) {
             LOGGER.info(message.getClass().getSimpleName() + '\n' + message.toString());
         }
-//        else {
-//            LOGGER.warn(message.getClass().getSimpleName() + '\n' + message.toString());
-//        }
+        else {
+            LOGGER.warn(message.getClass().getSimpleName() + '\n' + message.toString());
+        }
     }
 
     /**
