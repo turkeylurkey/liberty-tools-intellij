@@ -1,5 +1,5 @@
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
-NOTICES AND INFORMATION FOR Liberty Tools for IntelliJ IDEA
+NOTICES AND INFORMATION FOR Tools for IntelliJ IDEA
 
 ++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++++
 

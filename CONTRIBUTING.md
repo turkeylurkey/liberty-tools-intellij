@@ -1,8 +1,6 @@
-# Contributing to Liberty Tools for IntelliJ IDEA
+# Contributing to Tools for IntelliJ IDEA
 
 We welcome contributions, and request you follow these guidelines.
-
-> Note: Starting with the [0.0.8 early release](https://github.com/OpenLiberty/liberty-tools-intellij/releases/tag/0.0.8), Java 17 (bundled with IntelliJ IDEA version 2022.2+) and a minimum version of IntelliJ IDEA version 2022.2 are required to run Liberty Tools for IntelliJ IDEA.
 
  - [Raising issues](#raising-issues)
  - [Legal](#legal)
@@ -11,7 +9,7 @@ We welcome contributions, and request you follow these guidelines.
 
 ### Raising issues
 
-Please raise any bug reports on the [issue tracker](https://github.com/OpenLiberty/liberty-tools-intellij/issues). Be sure to search the list to see if your issue has already been raised.
+Please raise any bug reports on the [issue tracker](https://github.com/Eclipse/lsp4ij/issues). Be sure to search the list to see if your issue has already been raised.
 
 A good bug report makes it easy for us to understand what you were trying to do and what went wrong. Provide as much context as possible so we can try to recreate the issue.
 
@@ -43,6 +41,3 @@ This project follows Eclipse standard Java language [coding conventions](https:/
 Please note:
  - all PRs must have passing builds
 
-### Developing
-
-To learn how to set up, run, and test your development environment, see [Developing Liberty Tools for IntelliJ IDEA](DEVELOPING.md).
