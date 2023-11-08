@@ -206,7 +206,7 @@ public class LibertyMavenUtil {
         String mavenHome = mavenSettings.getMavenHome();
         if (MavenServerManager.WRAPPED_MAVEN.equals(mavenHome)) {
             // it is set to use the wrapper
-            return getLocalMavenWrapper(buildFile);
+            return getLocalMavenWrapper(project, buildFile);
         } else {
             // try to use maven home path defined in the settings
             return getCustomMavenPath(project, mavenHome);
@@ -216,13 +216,19 @@ public class LibertyMavenUtil {
     /**
      * Get the local wrapper path for Maven that is in the project level
      *
+     * @param project the liberty project containing the application project directory
      * @param buildFile the build file specified in the application project directory
      * @return the Maven wrapper path to be executed or an exception to display
      * @throws LibertyException
      */
-    private static String getLocalMavenWrapper(VirtualFile buildFile) throws LibertyException {
+    private static String getLocalMavenWrapper(Project project, VirtualFile buildFile) throws LibertyException {
         String mvnw = SystemInfo.isWindows ? ".\\mvnw.cmd" : "./mvnw";
         File wrapper = new File(buildFile.getParent().getPath(), mvnw);
+        File bfWrapper = null;
+        if (!wrapper.exists() || !wrapper.canExecute()) {
+            bfWrapper = wrapper;
+            wrapper = new File(project.getBasePath(), mvnw);
+        }
         if (!wrapper.exists()){
             String translatedMessage = LocalizedResourceUtil.getMessage("maven.wrapper.does.not.exist");
             throw new LibertyException("A Maven wrapper for the project could not be found. Make sure to configure a " +
@@ -233,6 +239,11 @@ public class LibertyMavenUtil {
             throw new LibertyException("Could not execute Maven wrapper because the process does not have permission to " +
                     "execute it. Consider giving executable permission for the Maven wrapper file or changing the build " +
                     "preferences for Maven inside IntelliJ Maven preferences.", translatedMessage);
+        }
+        if (bfWrapper != null) {
+            LOGGER.warn("The wrapper built from the build file is invalid, using wrapper from project directory. exists="
+                    + bfWrapper.exists() + " canExecute=" + bfWrapper.canExecute());
+            mvnw = wrapper.getAbsolutePath();
         }
         return mvnw;
     }
