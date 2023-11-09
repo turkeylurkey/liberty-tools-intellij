@@ -241,7 +241,7 @@ public class LibertyMavenUtil {
                     "preferences for Maven inside IntelliJ Maven preferences.", translatedMessage);
         }
         if (bfWrapper != null) {
-            LOGGER.warn("The wrapper built from the build file is invalid, using wrapper from project directory. exists="
+            LOGGER.warn("A wrapper in the build file directory is either invalid or missing. Using wrapper from project base directory. Build file wrapper values: exists="
                     + bfWrapper.exists() + " canExecute=" + bfWrapper.canExecute());
             mvnw = wrapper.getAbsolutePath();
         }
