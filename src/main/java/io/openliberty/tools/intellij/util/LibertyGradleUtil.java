@@ -215,13 +215,13 @@ public class LibertyGradleUtil {
      */
     private static String getLocalGradleWrapperPath(String wrapperDir) throws LibertyException {
         String gradlew = SystemInfo.isWindows ? ".\\gradlew.bat" : "./gradlew";
-        File file = new File(wrapperDir, gradlew);
-        if (!file.exists()){
+        File wrapper = new File(wrapperDir, gradlew);
+        if (!wrapper.exists()){
             String translatedMessage = LocalizedResourceUtil.getMessage("gradle.wrapper.does.not.exist");
             throw new LibertyException("A Gradle wrapper for the project could not be found. Make sure to configure a " +
                     "valid Gradle wrapper or change the build preferences for Gradle inside IntelliJ Gradle preferences.", translatedMessage);
         }
-        if (!file.canExecute()) {
+        if (!wrapper.canExecute()) {
             String translatedMessage = LocalizedResourceUtil.getMessage("gradle.wrapper.cannot.execute");
             throw new LibertyException("Could not execute Gradle wrapper because the process does not have permission to " +
                     "execute it. Consider giving executable permission for the Gradle wrapper file or changing the build " +
@@ -229,7 +229,7 @@ public class LibertyGradleUtil {
         }
         String path;
         try {
-            path = file.getCanonicalPath();
+            path = wrapper.getCanonicalPath();
         } catch (IOException e) {
             throw new LibertyException("Could not get canonical path for gradle wrapper file");
         }
