@@ -92,6 +92,9 @@ gatherDebugData() {
         cp "$workingDir"/build/idea-sandbox/system/log/idea.log "$workingDir"/build/reports/.
     fi
 
+    echo -e "DEBUG: Show gradle cache of io.openliberty.features...\n"
+    find ~/.gradle/caches/modules-2/files-2.1/io.openliberty.features -print
+
     echo -e "DEBUG: Gathering JVM crash log...\n"
     if [ $(ls "$workingDir"/hs_err_*.log* 2> /dev/null) ]; then
         cp "$workingDir"/hs_err_*.log "$workingDir"/build/reports/.
