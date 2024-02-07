@@ -42,8 +42,8 @@ prefetchDependencies() {
     # Run through dev mode server install/create and feature installation for the Gradle app.
     cd "$workingDir"
     cd "src/test/resources/projects/gradle/singleModGradleMP"
-    ./gradlew installLiberty
-    ./gradlew libertyCreate
+    ./gradlew installLiberty --debug
+    ./gradlew libertyCreate --debug
     ./gradlew installFeature
 
     # Go back to the working dir.

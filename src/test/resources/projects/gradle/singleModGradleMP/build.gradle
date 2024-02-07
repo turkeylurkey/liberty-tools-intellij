@@ -20,6 +20,7 @@ dependencies {
     // provided dependencies
     providedCompile 'jakarta.platform:jakarta.jakartaee-api:9.1.0'
     providedCompile 'org.eclipse.microprofile:microprofile:5.0'
+    libertyRuntime group: 'io.openliberty', name: 'openliberty-kernel', version: '23.0.0.6'
 
     testImplementation 'org.junit.jupiter:junit-jupiter:5.8.2'
     testImplementation 'org.jboss.resteasy:resteasy-client:6.0.0.Final'
