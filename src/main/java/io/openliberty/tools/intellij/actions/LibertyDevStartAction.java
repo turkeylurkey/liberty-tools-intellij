@@ -76,6 +76,10 @@ public class LibertyDevStartAction extends LibertyGeneralAction {
             }
         }
 
+        // copy output and direct it to a file
+        String logFile = project.getBasePath() + "/../log_" + projectName + "_" + java.time.LocalDateTime.now().toString().replace(':', '_').replace('.', '_') + ".txt";
+        startCmd += " 2>&1 | tee " + logFile;
+
         ShellTerminalWidget widget = getTerminalWidget(true, project, buildFile, getActionCommandName());
         if (widget == null) {
             return;

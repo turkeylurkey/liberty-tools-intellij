@@ -45,6 +45,10 @@ prefetchDependencies() {
     ./gradlew installLiberty --debug
     ./gradlew libertyCreate --debug
     ./gradlew installFeature
+    # enable userInfo for testInsertLibertyConfigElementIntoServerXML
+    ./build/wlp/bin/featureUtility installFeature openid-2.0
+    # enable mpMetrics for testDiagnosticInServerXML
+    ./build/wlp/bin/featureUtility installFeature mpMetrics-4.0
 
     # Go back to the working dir.
     cd "$workingDir"
@@ -91,6 +95,16 @@ gatherDebugData() {
     if [ -f "$workingDir/build/idea-sandbox/system/log/idea.log" ]; then
         cp "$workingDir"/build/idea-sandbox/system/log/idea.log "$workingDir"/build/reports/.
     fi
+
+    echo -e "DEBUG: Show gradle cache of io.openliberty.features...\n"
+    find ~/.gradle/caches/modules-2/files-2.1/io.openliberty.features -print
+
+    echo -e "DEBUG: Gather liberty start logs...\n"
+    mkdir -p "$workingDir"/build/reports/logs
+    cp "$workingDir"/src/test/resources/projects/gradle/log* "$workingDir"/build/reports/logs
+
+    echo -e "DEBUG: Gather liberty language server xsd...\n"
+    cp "$workingDir"/src/test/resources/projects/gradle/singleModGradleMP/build/.libertyls/*.xsd "$workingDir"/build/reports
 
     echo -e "DEBUG: Show gradle cache of io.openliberty.features...\n"
     find ~/.gradle/caches/modules-2/files-2.1/io.openliberty.features -print
