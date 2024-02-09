@@ -274,7 +274,7 @@ public abstract class SingleModMPProjectTestCommon {
         UIBotTestUtils.runActionFromSearchEverywherePanel(remoteRobot, "Liberty: Start...", 3);
 
         // Run the configuration dialog.
-        UIBotTestUtils.runStartParamsConfigDialog(remoteRobot, getStartParams());
+        UIBotTestUtils.runStartParamsConfigDialog(remoteRobot, getStartParams() + " --invalid");
 
         try {
             // Validate that the application started.
