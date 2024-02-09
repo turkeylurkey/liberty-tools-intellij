@@ -33,7 +33,7 @@ public class GradleSingleModMPProjectTest extends SingleModMPProjectTestCommon {
     /**
      * Project port.
      */
-    private final int SM_MP_PROJECT_PORT = 9080;
+    private final int SM_MP_PROJECT_PORT = 9082;
 
     /**
      * Project resource URI.
