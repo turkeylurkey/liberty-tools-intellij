@@ -109,6 +109,9 @@ gatherDebugData() {
     echo -e "DEBUG: Show gradle cache of io.openliberty.features...\n"
     find ~/.gradle/caches/modules-2/files-2.1/io.openliberty.features -print
 
+    echo -e "DEBUG: Show contents of serverdir config dirs...\n"
+    find "$workingDir"/src/test/resources/projects/gradle/singleModGradleMP/build/wlp/usr/servers/defaultServer -print -exec cat {} \;
+    
     echo -e "DEBUG: Gathering JVM crash log...\n"
     if [ $(ls "$workingDir"/hs_err_*.log* 2> /dev/null) ]; then
         cp "$workingDir"/hs_err_*.log "$workingDir"/build/reports/.
