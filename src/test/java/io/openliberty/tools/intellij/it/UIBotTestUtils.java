@@ -846,29 +846,31 @@ public class UIBotTestUtils {
         for (int i = 0; i < 10; i++) {
             error = null;
             try {
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "go to line/col");
                 // move the cursor to the origin of the editor
                 goToLineAndColumn(remoteRobot, keyboard, 1, 1);
-
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "click origin");
                 editorNew.click(originPt);
-
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "find text in editor");
                 // Find the target text on the editor and move the move to it.
                 editorNew.findText(contains(hoverTarget)).moveMouse();
-
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "jitter cursor");
                 // jitter the cursor
                 Point p = editorNew.findText(contains(hoverTarget)).getPoint();
 
                 // provoke the hint popup with a cursor jitter
                 jitterCursor(editorNew, p.x, p.y);
-
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "find popup, wait 10s");
                 // first get the contents of the popup - put in a String
                 ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofSeconds(10));
 
                 projectFrame.getDiagnosticPane();
                 ContainerFixture quickFixPopupLink = projectFrame.getQuickFixMoreActionsLink();
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "click pop-up link");
                 quickFixPopupLink.click();
 
                 ContainerFixture quickFixPopup = projectFrame.getQuickFixPane();
-
+                TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "Wait 10s for quick fix chooser string");
                 RepeatUtilsKt.waitFor(Duration.ofSeconds(10),
                         Duration.ofSeconds(2),
                         "Waiting for the The quickfix popup to contain " + quickfixChooserString,
@@ -1292,7 +1294,7 @@ public class UIBotTestUtils {
         editorNew.selectText(textToModify);
         keyboard.hotKey(VK_DELETE);
         keyboard.enterText(modificationText);
-
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "done entering modification text");
         // save the new content
         if (remoteRobot.isMac()) {
             keyboard.hotKey(VK_META, VK_S);
@@ -1301,8 +1303,9 @@ public class UIBotTestUtils {
             keyboard.hotKey(VK_CONTROL, VK_S);
         }
 
-        // slight delay to allow the diagnotic/quick fix data to arrive?
+        // slight delay to allow the diagnostic/quick fix data to arrive?
         TestUtils.sleepAndIgnoreException(2);
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO,"select and modify java text complete");
     }
 
     /**

@@ -144,17 +144,17 @@ public abstract class SingleModJakartaLSTestCommon {
 
         // Save the current content.
         UIBotTestUtils.copyWindowContent(remoteRobot);
-
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "copy window text");
         // Modify the method signature
         UIBotTestUtils.selectAndModifyTextInJavaPart(remoteRobot, "SystemResource2.java", publicString, privateString);
 
         try {
             // validate public signature no longer found in java part
             TestUtils.validateStringNotInFile(pathToSrc.toString(), publicString);
-
+            TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "after validate string not in file, about to hover");
             //there should be a diagnostic - move cursor to hover point
             UIBotTestUtils.hoverForQuickFixInAppFile(remoteRobot, flaggedString, "SystemResource2.java", quickfixChooserString);
-
+            TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "after hover for quick fix");
             // trigger and use the quickfix popup attached to the diagnostic
             UIBotTestUtils.chooseQuickFix(remoteRobot, quickfixChooserString);
 
