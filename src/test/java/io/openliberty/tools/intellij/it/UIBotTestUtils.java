@@ -1292,6 +1292,12 @@ public class UIBotTestUtils {
         editorNew.selectText(textToModify);
         keyboard.hotKey(VK_DELETE);
         keyboard.enterText(modificationText);
+        // Force the diagnostic and quick fixes to be recalculated in case the enterText() messed it up.
+        // The cadence of enterText() typing characters can cause the language server messages to interfere
+        // with each other.
+        TestUtils.sleepAndIgnoreException(2);
+        keyboard.enterText(" ");
+        keyboard.hotKey(VK_BACK_SPACE);
 
         // save the new content
         if (remoteRobot.isMac()) {
