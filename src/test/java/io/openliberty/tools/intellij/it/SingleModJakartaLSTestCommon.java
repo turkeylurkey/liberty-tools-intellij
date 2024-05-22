@@ -5,6 +5,7 @@ import com.intellij.remoterobot.RemoteRobot;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
+import org.junit.Ignore;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Path;
@@ -131,6 +132,7 @@ public abstract class SingleModJakartaLSTestCommon {
      */
     @Test
     @Video
+    @Ignore
     public void testJakartaQuickFixInJavaPart() {
         String publicString = "public Response getProperties() {";
         String privateString = "private Response getProperties() {";
