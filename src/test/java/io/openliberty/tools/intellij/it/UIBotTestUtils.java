@@ -1605,7 +1605,7 @@ public class UIBotTestUtils {
                         () -> findTextInListOutputPanel(projectFrame, action) != null);
 
                 RemoteText foundAction = findTextInListOutputPanel(projectFrame, action);
-                if (foundAction != null) {
+                if (foundAction != null && action.equals(foundAction.getText())) {
                     foundAction.click();
                 } else {
                     throw new RuntimeException("Search everywhere found " + action + ", but it can no longer be found after a subsequent attempt to find it.");
