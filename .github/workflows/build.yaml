@@ -5,7 +5,7 @@ on:
   push:
     branches: '**'
   pull_request:
-    branches: [ main, code-action-unification-2 ]
+    branches: [ main ]
 
 jobs:
   build:
@@ -20,7 +20,7 @@ jobs:
             reportName: linux-test-report
           - runtime: mac
             os: macOS-latest
-            reportName: mac-latest-test-report
+            reportName: mac-test-report
           - runtime: mac13
             os: macOS-13
             reportName: mac13-test-report
