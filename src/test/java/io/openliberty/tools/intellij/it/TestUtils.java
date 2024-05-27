@@ -540,5 +540,15 @@ public class TestUtils {
         Assertions.assertTrue(debugPortIsSet, "Debug Port is not set to " + debugPort);
     }
 
-
+    /**
+     * The first time the UI starts it needs to index a lot of files. Just chill for a
+     * few minutes. Only runs once, subsequent calls just return.
+     */
+    static boolean started = false;
+    public static void waitOnStartup() {
+        if (!started) {
+            started = true;
+            sleepAndIgnoreException(600);
+        }
+    }
 }
