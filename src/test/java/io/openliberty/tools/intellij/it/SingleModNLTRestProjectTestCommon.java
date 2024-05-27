@@ -232,6 +232,7 @@ public abstract class SingleModNLTRestProjectTestCommon {
         // of the window, it will display the project it detected, or a message stating that no
         // projects were detected. A message stating that no projects were detected is what is expected here.
         UIBotTestUtils.waitForLTWNoProjectDetectedMsg(remoteRobot, 300);
+        TestUtils.sleepAndIgnoreException(600); // wait for all indexing to stop and for O/S background processes to complete.
 
         TestUtils.printTrace(TestUtils.TraceSevLevel.INFO,
                 "prepareEnv. Exit. ProjectName: " + projectName);
