@@ -324,6 +324,7 @@ public abstract class SingleModMPLSTestCommon {
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
+        TestUtils.waitOnStartup();
     }
 }
 

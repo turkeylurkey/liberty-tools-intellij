@@ -411,5 +411,6 @@ public abstract class SingleModLibertyLSTestCommon {
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
+        TestUtils.waitOnStartup();
     }
 }
