@@ -17,11 +17,13 @@ public abstract class SingleModJakartaLSTestCommon {
     public static final String REMOTEBOT_URL = "http://localhost:8082";
     public static final RemoteRobot remoteRobot = new RemoteRobot(REMOTEBOT_URL);
 
+    String dirName; // used to test the scenario where the Liberty project is not in the root directory
     String projectName;
     String projectsPath;
 
 
-    public SingleModJakartaLSTestCommon(String projectName, String projectsPath) {
+    public SingleModJakartaLSTestCommon(String dirName, String projectName, String projectsPath) {
+        this.dirName = dirName;
         this.projectName = projectName;
         this.projectsPath = projectsPath;
     }
@@ -83,7 +85,7 @@ public abstract class SingleModJakartaLSTestCommon {
         // Insert a code snippet into java part
         try {
             UIBotTestUtils.insertCodeSnippetIntoSourceFile(remoteRobot, "SystemResource.java", snippetStr, snippetChooser);
-            Path pathToSrc = Paths.get(projectsPath, projectName, "src", "main", "java", "io", "openliberty", "mp", "sample", "system", "SystemResource.java");
+            Path pathToSrc = Paths.get(projectsPath, dirName, projectName, "src", "main", "java", "io", "openliberty", "mp", "sample", "system", "SystemResource.java");
             TestUtils.validateCodeInJavaSrc(pathToSrc.toString(), insertedCode);
         }
         finally {
@@ -101,7 +103,7 @@ public abstract class SingleModJakartaLSTestCommon {
         String privateString = "private Response getProperties() {";
         String flaggedString = "getProperties";
         String expectedHoverData = "Only public methods can be exposed as resource methods";
-        Path pathToSrc = Paths.get(projectsPath, projectName, "src", "main", "java", "io", "openliberty", "mp", "sample", "system", "SystemResource2.java");
+        Path pathToSrc = Paths.get(projectsPath, dirName, projectName, "src", "main", "java", "io", "openliberty", "mp", "sample", "system", "SystemResource2.java");
 
         // get focus on file tab prior to copy
         UIBotTestUtils.clickOnFileTab(remoteRobot, "SystemResource2.java");
@@ -173,26 +175,31 @@ public abstract class SingleModJakartaLSTestCommon {
      * @param projectName The name of the project being used.
      */
 
-    public static void prepareEnv(String projectPath, String projectName) {
+    public static void prepareEnv(String projectPath, String dirName, String projectName) {
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
 
-        UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
+        UIBotTestUtils.importProject(remoteRobot, projectPath, dirName);
         UIBotTestUtils.openProjectView(remoteRobot);
-        UIBotTestUtils.openLibertyToolWindow(remoteRobot);
-        UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
-        UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
 
         // pre-open project tree before attempting to open files needed by testcases
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+        // Process the build.gradle in the Liberty project
+        projTree.expand(dirName, projectName);
+        projTree.findText("build.gradle").rightClick(); // open context menu
+        // find "Link Gradle Project"
+
+        UIBotTestUtils.openLibertyToolWindow(remoteRobot);
+        UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
+        UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
 
         // expand project directories that are specific to this test app being used by these testcases
         // must be expanded here before trying to open specific files
-        projTree.expand(projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        projTree.expand(dirName, projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
 
-        UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
-        UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource2", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        UIBotTestUtils.openFile(remoteRobot, dirName, "SystemResource", dirName, projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        UIBotTestUtils.openFile(remoteRobot, dirName, "SystemResource2", dirName, projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
 
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
