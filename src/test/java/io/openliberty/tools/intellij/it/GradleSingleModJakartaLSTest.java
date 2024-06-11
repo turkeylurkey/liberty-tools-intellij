@@ -19,6 +19,11 @@ import java.nio.file.Paths;
 public class GradleSingleModJakartaLSTest extends SingleModJakartaLSTestCommon {
 
     /**
+     * Directory Name
+     */
+    public static String DIR_NAME = "parentDir";
+
+    /**
      * Application Name
      */
     public static String PROJECT_NAME = "sampleGradleMPLSApp";
@@ -32,7 +37,7 @@ public class GradleSingleModJakartaLSTest extends SingleModJakartaLSTestCommon {
      * Application resoruce URL.
      */
     public GradleSingleModJakartaLSTest() {
-        super(PROJECT_NAME, PROJECTS_PATH);
+        super(DIR_NAME, PROJECT_NAME, PROJECTS_PATH);
     }
 
     /**
@@ -40,6 +45,6 @@ public class GradleSingleModJakartaLSTest extends SingleModJakartaLSTestCommon {
      */
     @BeforeAll
     public static void setup() {
-        prepareEnv(PROJECTS_PATH, PROJECT_NAME);
+        prepareEnv(PROJECTS_PATH, DIR_NAME, PROJECT_NAME);
     }
 }
