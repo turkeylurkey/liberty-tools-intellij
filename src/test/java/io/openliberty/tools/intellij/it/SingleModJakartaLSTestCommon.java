@@ -187,8 +187,9 @@ public abstract class SingleModJakartaLSTestCommon {
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
         // Process the build.gradle in the Liberty project
         projTree.expand(dirName, projectName);
-        projTree.findText("build.gradle").rightClick(); // open context menu
-        // find "Link Gradle Project"
+        projTree.findText("build.gradle").click(); // select the file for use in shift-shift window
+        // find "Link Gradle Project". If not found the project was already loaded e.g. you reran tests on local machine
+        UIBotTestUtils.runActionFromSearchEverywherePanel(remoteRobot, "Link Gradle Project", 1);
 
         UIBotTestUtils.openLibertyToolWindow(remoteRobot);
         UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
