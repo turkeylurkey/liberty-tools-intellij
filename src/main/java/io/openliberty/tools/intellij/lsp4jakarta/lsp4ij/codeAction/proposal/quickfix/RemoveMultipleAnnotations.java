@@ -12,17 +12,15 @@
  *******************************************************************************/
 package io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.codeAction.proposal.quickfix;
 
-import com.google.gson.JsonArray;
 import com.intellij.openapi.project.Project;
 import com.intellij.psi.PsiElement;
+import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.JDTUtils;
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.core.java.codeaction.JavaCodeActionContext;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.Diagnostic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 /**
  * This class is used to provide options to remove multiple annotations
@@ -44,11 +42,7 @@ public abstract class RemoveMultipleAnnotations extends RemoveAnnotationConflict
         PsiElement node = context.getCoveredNode();
         PsiElement parentType = getBinding(node);
 
-        // Obtain the list of annotations from the diagnostic.
-        JsonArray diagnosticData = (JsonArray) diagnostic.getData();
-
-        List<String> annotations = IntStream.range(0, diagnosticData.size())
-                .mapToObj(idx -> diagnosticData.get(idx).getAsString()).collect(Collectors.toList());
+        List<String> annotations = JDTUtils.getAnnotations(diagnostic);
 
         if (parentType != null) {
             List<CodeAction> codeActions = new ArrayList<>();

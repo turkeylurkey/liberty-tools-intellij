@@ -12,8 +12,8 @@
  *******************************************************************************/
 package io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.cdi;
 
-import com.google.gson.JsonArray;
 import com.intellij.psi.PsiElement;
+import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.JDTUtils;
 import io.openliberty.tools.intellij.lsp4jakarta.lsp4ij.codeAction.proposal.quickfix.RemoveAnnotationConflictQuickFix;
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.core.java.codeaction.JavaCodeActionContext;
 import org.eclipse.lsp4j.CodeAction;
@@ -21,8 +21,6 @@ import org.eclipse.lsp4j.Diagnostic;
 
 import java.util.ArrayList;
 import java.util.List;
-import java.util.stream.Collectors;
-import java.util.stream.IntStream;
 
 public class ScopeDeclarationQuickFix extends RemoveAnnotationConflictQuickFix {
     public ScopeDeclarationQuickFix() {
@@ -41,10 +39,7 @@ public class ScopeDeclarationQuickFix extends RemoveAnnotationConflictQuickFix {
         PsiElement node = context.getCoveredNode();
         PsiElement parentType = getBinding(node);
 
-        JsonArray diagnosticData = (JsonArray) diagnostic.getData();
-
-        List<String> annotations = IntStream.range(0, diagnosticData.size())
-                .mapToObj(idx -> diagnosticData.get(idx).getAsString()).collect(Collectors.toList());
+        List<String> annotations = JDTUtils.getAnnotations(diagnostic);
 
         annotations.remove(ManagedBeanConstants.PRODUCES_FQ_NAME);
 

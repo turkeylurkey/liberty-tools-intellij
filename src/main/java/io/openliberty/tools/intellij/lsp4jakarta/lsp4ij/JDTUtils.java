@@ -17,17 +17,20 @@ import com.intellij.psi.PsiClass;
 import com.intellij.psi.PsiField;
 import com.intellij.psi.PsiJavaFile;
 import com.intellij.psi.PsiMethod;
+import com.redhat.devtools.lsp4ij.JSONUtils;
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.core.java.codeaction.ExtendedCodeAction;
 import io.openliberty.tools.intellij.lsp4mp4ij.psi.core.java.codeaction.JavaCodeActionContext;
 import org.eclipse.lsp4j.CodeAction;
 import org.eclipse.lsp4j.CodeActionKind;
 import org.eclipse.lsp4j.Diagnostic;
 import org.eclipse.lsp4mp.commons.codeaction.CodeActionResolveData;
+import org.jetbrains.annotations.NotNull;
 
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.List;
 import java.util.Map;
+import java.util.stream.Collectors;
 
 public class JDTUtils {
     // Percent encoding obtained from: https://en.wikipedia.org/wiki/Percent-encoding#Reserved_characters
@@ -108,5 +111,15 @@ public class JDTUtils {
     public static CodeAction createCodeAction(JavaCodeActionContext context, Diagnostic diagnostic,
                                               String quickFixMessage, String participantId) {
         return createCodeAction(context, diagnostic, quickFixMessage, participantId, null);
+    }
+
+    @NotNull
+    public static List<String> getAnnotations(Diagnostic diagnostic) {
+        // Obtain the list of annotations from the diagnostic.
+        Map<String, List<Map<String, String>>> diagnosticDataWrapped2 = JSONUtils.toModel(diagnostic.getData(), Map.class);
+        List<Map<String, String>> diagnosticDataWrapped = diagnosticDataWrapped2.values().iterator().next();
+        List<String> annotations = diagnosticDataWrapped.stream()
+                .map(m -> m.values().iterator().next()).collect(Collectors.toList());
+        return annotations;
     }
 }
