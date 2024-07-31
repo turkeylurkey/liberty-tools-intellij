@@ -13,6 +13,7 @@ import java.time.Duration;
 
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitForIgnoringError;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public abstract class SingleModMPLSTestCommon {
     public static final String REMOTEBOT_URL = "http://localhost:8082";
@@ -310,7 +311,7 @@ public abstract class SingleModMPLSTestCommon {
      * @param projectName The name of the project being used.
      */
 
-    public static void prepareEnv(String projectPath, String projectName) {
+    public void prepareEnv(String projectPath, String projectName) {
 
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
