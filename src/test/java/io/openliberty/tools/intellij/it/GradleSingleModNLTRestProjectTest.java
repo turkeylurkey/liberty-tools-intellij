@@ -11,6 +11,7 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 
 import java.nio.file.Paths;
@@ -42,7 +43,10 @@ public class GradleSingleModNLTRestProjectTest extends SingleModNLTRestProjectTe
     /**
      * Prepares the environment for test execution.
      */
-    @BeforeAll
+    //@BeforeAll
+    @Test
+    @Video
+    @Order(1)
     public static void setup() {
         prepareEnv(PROJECTS_PATH, SM_NLT_REST_PROJECT_NAME);
     }
@@ -99,6 +103,7 @@ public class GradleSingleModNLTRestProjectTest extends SingleModNLTRestProjectTe
      */
     @Test
     @Video
+    @Order(2)
     public void testsRefreshProjectWithLTBuildCfgOnly() {
         testsRefreshProjectWithLTBuildCfgOnly("pluginsDSLOnlyDepDef.build.gradle");
     }
