@@ -11,6 +11,7 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Order;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
@@ -40,7 +41,10 @@ public class GradleSingleModMPLSTest extends SingleModMPLSTestCommon {
     /**
      * Prepares the environment for test execution.
      */
-    @BeforeAll
+    //@BeforeAll
+    @Test
+    @Video
+    @Order(1)
     public static void setup() {
         prepareEnv(PROJECTS_PATH, PROJECT_NAME);
     }
