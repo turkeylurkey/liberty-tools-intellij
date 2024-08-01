@@ -452,7 +452,8 @@ public class UIBotTestUtils {
             try {
                 error = null;
                 ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofSeconds(10));
-                projectFrame.getContentComboLabel("Project", "5");
+                ComponentFixture projectLabel = projectFrame.getContentComboLabel("Project", "5");
+                projectLabel.click(); // Bring the window to the front for operations later
                 break;
             } catch (WaitForConditionTimeoutException wfcte) {
                 // The project view is closed. Open it.
