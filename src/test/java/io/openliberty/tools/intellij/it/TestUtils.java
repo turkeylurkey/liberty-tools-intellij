@@ -548,7 +548,7 @@ public class TestUtils {
     public static void waitOnStartup() {
         if (!started) {
             started = true;
-            sleepAndIgnoreException(600);
+            sleepAndIgnoreException(6);
         }
     }
 }
