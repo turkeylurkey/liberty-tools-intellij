@@ -408,7 +408,10 @@ public class UIBotTestUtils {
                 break;
             } catch (WaitForConditionTimeoutException wfcte) {
                 // The Liberty tool window is closed. Open it.
-                clickOnWindowPaneStripeButton(remoteRobot, "Liberty");
+                // Click 5 times in case the window is covered by another window. Must be an odd number of clicks.
+                for (int j = 0; j < 5; j++) {
+                    clickOnWindowPaneStripeButton(remoteRobot, "Liberty");
+                }
                 break;
             } catch (Exception e) {
                 // The project frame may hang for a bit while loading/processing work. Retry.

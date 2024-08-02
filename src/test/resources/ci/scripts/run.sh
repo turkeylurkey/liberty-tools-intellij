@@ -152,18 +152,6 @@ main() {
         echo -e "\n$(${currentTime[@]}): ERROR: Failure while priming the env. rc: ${rc}."
         exit 11
     fi
-    # Remove notifications on macos e.g. "Welcome to MacOS" by hitting ESC key once per second three times
-    if [[ "$OS" == Darwin* ]]; then
-      osascript -e 'delay 5' \
-      -e 'tell application "System Events"' \
-      -e 'key code 53' \
-      -e 'delay 1' \
-      -e 'key code 53' \
-      -e 'delay 1' \
-      -e 'key code 53' \
-      -e 'delay 1' \
-      -e 'end tell'
-    fi
 
     # Start the IDE.
     echo -e "\n$(${currentTime[@]}): INFO: Starting the IntelliJ IDE..."
