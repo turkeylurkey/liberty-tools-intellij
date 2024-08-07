@@ -153,6 +153,11 @@ main() {
         exit 11
     fi
 
+    if [[ "$OS" == Darwin* ]]; then
+      # list all the processes to see which ones show Tips
+      ps -ef
+    fi
+    
     # Start the IDE.
     echo -e "\n$(${currentTime[@]}): INFO: Starting the IntelliJ IDE..."
     ./gradlew runIdeForUiTests --info  > remoteServer.log  2>&1 &
