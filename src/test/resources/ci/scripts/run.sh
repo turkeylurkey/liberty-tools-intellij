@@ -156,6 +156,7 @@ main() {
     if [[ "$OS" == Darwin* ]]; then
       # list all the processes to see which ones show Tips
       ps -ef
+      defaults write -g ApplePersistence -bool false
     fi
     
     # Start the IDE.
