@@ -179,8 +179,7 @@ public abstract class SingleModJakartaLSTestCommon {
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
         UIBotTestUtils.openProjectView(remoteRobot);
-        UIBotTestUtils.openLibertyToolWindow(remoteRobot);
-        UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
+        UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
 
         // pre-open project tree before attempting to open files needed by testcases

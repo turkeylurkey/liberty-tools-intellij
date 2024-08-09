@@ -390,8 +390,7 @@ public abstract class SingleModLibertyLSTestCommon {
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
         UIBotTestUtils.openProjectView(remoteRobot);
-        UIBotTestUtils.openLibertyToolWindow(remoteRobot);
-        UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
+        UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
 
         // get a JTreeFixture reference to the file project viewer entry
