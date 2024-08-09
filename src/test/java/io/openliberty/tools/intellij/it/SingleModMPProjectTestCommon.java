@@ -908,8 +908,7 @@ public abstract class SingleModMPProjectTestCommon {
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
         UIBotTestUtils.openProjectView(remoteRobot);
-        UIBotTestUtils.openLibertyToolWindow(remoteRobot);
-        UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, projectName);
+        UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.expandLibertyToolWindowProjectTree(remoteRobot, projectName);
 
         // Close all open editors.
