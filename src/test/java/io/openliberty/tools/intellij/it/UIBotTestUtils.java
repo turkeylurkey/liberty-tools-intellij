@@ -376,8 +376,8 @@ public class UIBotTestUtils {
             // that the project is displayed in the Liberty tool window.
         }
 
-        // Wait for the project to appear in the Liberty tool window.
-        ComponentFixture treeFixture = projectFrame.getTree("LibertyTree", treeItem, "10");
+        // Wait for the project to appear in the Liberty tool window. Indexing is a long process right now.
+        ComponentFixture treeFixture = projectFrame.getTree("LibertyTree", treeItem, "600");
         System.out.println("validateImportedProjectShowsInLTW1");
         RepeatUtilsKt.waitFor(Duration.ofSeconds(10),
                 Duration.ofSeconds(2),
