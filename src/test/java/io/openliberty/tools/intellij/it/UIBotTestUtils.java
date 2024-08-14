@@ -368,23 +368,19 @@ public class UIBotTestUtils {
         // and suddenly disappear when indexing starts. It is not known when indexing may start.
         // It can be immediate or take a few seconds (10+). Wait a bit for it to start.
         try {
-            System.out.println("validateImportedProjectShowsInLTW");
             UIBotTestUtils.waitForLTWIndexingMsg(remoteRobot, 20);
         } catch (WaitForConditionTimeoutException wfcte) {
-            System.out.println("validateImportedProjectShowsInLTW0");
             // Indexing never started, or it completed. Proceed to validate
             // that the project is displayed in the Liberty tool window.
         }
 
         // Wait for the project to appear in the Liberty tool window. Indexing is a long process right now.
         ComponentFixture treeFixture = projectFrame.getTree("LibertyTree", treeItem, "600");
-        System.out.println("validateImportedProjectShowsInLTW1");
         RepeatUtilsKt.waitFor(Duration.ofSeconds(10),
                 Duration.ofSeconds(2),
                 "Waiting for tree item" + treeItem + " to show in the Liberty tool window.",
                 "Tree item " + treeItem + " did not show in Liberty tool window.",
                 treeFixture::isShowing);
-        System.out.println("validateImportedProjectShowsInLTW2");
         return treeFixture.isShowing();
     }
 
@@ -403,15 +399,19 @@ public class UIBotTestUtils {
     public static void openAndValidateLibertyToolWindow(RemoteRobot remoteRobot, String treeItem) {
         // Try multiple times in case the O/S is displaying a modal dialog that blocks the button.
         for (int i = 1; i <=3; i++) {
-            System.out.println("openAndValidateLibertyToolWindow, i=" + i);
-            UIBotTestUtils.openLibertyToolWindow(remoteRobot);
-            System.out.println("openAndValidateLibertyToolWindow2");
-            if (UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, treeItem)) {
-                break;
+            try {
+                UIBotTestUtils.openLibertyToolWindow(remoteRobot);
+                if (UIBotTestUtils.validateImportedProjectShowsInLTW(remoteRobot, treeItem)) {
+                    break;
+                }
+            } catch (Exception e) {
+                // Any of the operations above could end up in an exception if the element is
+                // not found etc. Wait and retry.
             }
+            TestUtils.sleepAndIgnoreException(3);
         }
-
     }
+
     /**
      * Opens the Liberty tool window if it is not already open.
      *
@@ -1759,7 +1759,6 @@ public class UIBotTestUtils {
      * @param waitTime    The time (seconds) to wait for the required message to appear in the text area.
      */
     public static void waitForLTWIndexingMsg(RemoteRobot remoteRobot, int waitTime) {
-        System.out.println("waitForLTWIndexingMsg");
         String text = "This view is not available until indexes are built";
         waitForLTWTextAreaMessage(remoteRobot, text, waitTime);
     }
@@ -1772,18 +1771,14 @@ public class UIBotTestUtils {
      * @param waitTime    The time (seconds) to wait for the required message to appear in the text area.
      */
     public static void waitForLTWTextAreaMessage(RemoteRobot remoteRobot, String message, int waitTime) {
-        System.out.println("waitForLTWTextAreaMessage");
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofSeconds(10));
-        System.out.println("waitForLTWTextAreaMessage2");
         ComponentFixture textArea = projectFrame.getTextArea("30");
 
-        System.out.println("waitForLTWTextAreaMessage3");
         RepeatUtilsKt.waitFor(Duration.ofSeconds(waitTime),
                 Duration.ofSeconds(1),
                 "Waiting for message " + message + " to appear in the Liberty tool window",
                 "Message " + message + " did not appear in the Liberty tool window",
                 () -> readAllText(textArea).equals(message));
-        System.out.println("waitForLTWTextAreaMessage4");
     }
 
     /**
