@@ -5,6 +5,7 @@ import com.intellij.remoterobot.RemoteRobot;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
+import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Path;
@@ -333,6 +334,7 @@ public abstract class SingleModMPLSTestCommon {
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
         TestUtils.waitOnStartup();
+        Assert.fail("Forced fail to watch the video... ");
     }
 }
 
