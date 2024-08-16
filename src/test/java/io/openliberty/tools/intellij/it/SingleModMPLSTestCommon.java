@@ -318,6 +318,7 @@ public abstract class SingleModMPLSTestCommon {
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
+        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
         UIBotTestUtils.openProjectView(remoteRobot);
         System.out.println("prepareEnv");
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
@@ -333,7 +334,6 @@ public abstract class SingleModMPLSTestCommon {
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
-        TestUtils.waitOnStartup();
         Assert.fail("Forced fail to watch the video... ");
     }
 }
