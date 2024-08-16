@@ -47,7 +47,6 @@ public abstract class SingleModMPProjectTestCommon {
     @BeforeEach
     public void beforeEach(TestInfo info) {
         TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, this.getClass().getSimpleName() + "." + info.getDisplayName() + ". Entry");
-        TestUtils.waitOnStartup();
     }
 
     /**
@@ -907,6 +906,7 @@ public abstract class SingleModMPProjectTestCommon {
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
+        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
         UIBotTestUtils.openProjectView(remoteRobot);
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.expandLibertyToolWindowProjectTree(remoteRobot, projectName);
@@ -919,7 +919,6 @@ public abstract class SingleModMPProjectTestCommon {
         // in the Liberty tool window is clicked or right-clicked again. This is done on purpose to
         // prevent false negative tests related to the build file editor tab.
         UIBotTestUtils.closeAllEditorTabs(remoteRobot);
-        TestUtils.waitOnStartup();
 
         TestUtils.printTrace(TestUtils.TraceSevLevel.INFO,
                 "prepareEnv. Exit. ProjectName: " + projectName);

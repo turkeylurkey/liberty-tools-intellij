@@ -318,6 +318,7 @@ public abstract class SingleModMPLSTestCommon {
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
+        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
         UIBotTestUtils.openProjectView(remoteRobot);
         System.out.println("prepareEnv");
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
@@ -325,14 +326,12 @@ public abstract class SingleModMPLSTestCommon {
 
         // pre-open project tree before attempting to open files needed by testcases
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
-        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 1200); // Indexing on a slow VM
 
         UIBotTestUtils.openFile(remoteRobot, projectName, "ServiceLiveHealthCheck", projectName, "src", "main", "java", "io.openliberty.mp.sample", "health");
         UIBotTestUtils.openFile(remoteRobot, projectName, "microprofile-config.properties", projectName, "src", "main", "resources", "META-INF");
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
-        TestUtils.waitOnStartup();
         Assert.fail("Forced fail to watch the video... ");
     }
 }

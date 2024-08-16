@@ -225,6 +225,7 @@ public abstract class SingleModNLTRestProjectTestCommon {
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
+        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
         UIBotTestUtils.openProjectView(remoteRobot);
         UIBotTestUtils.openLibertyToolWindow(remoteRobot);
 
@@ -232,7 +233,6 @@ public abstract class SingleModNLTRestProjectTestCommon {
         // of the window, it will display the project it detected, or a message stating that no
         // projects were detected. A message stating that no projects were detected is what is expected here.
         UIBotTestUtils.waitForLTWNoProjectDetectedMsg(remoteRobot, 300);
-        TestUtils.waitOnStartup(); // wait for all indexing to stop and for O/S background processes to complete.
 
         TestUtils.printTrace(TestUtils.TraceSevLevel.INFO,
                 "prepareEnv. Exit. ProjectName: " + projectName);
