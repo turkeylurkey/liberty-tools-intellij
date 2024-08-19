@@ -10,14 +10,14 @@
 package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
-import org.junit.jupiter.api.*;
+import org.junit.jupiter.api.BeforeAll;
+import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
 import java.nio.file.Paths;
 
 @DisabledOnOs({OS.WINDOWS})
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public class GradleSingleModMPLSTest extends SingleModMPLSTestCommon {
 
     /**
@@ -40,11 +40,8 @@ public class GradleSingleModMPLSTest extends SingleModMPLSTestCommon {
     /**
      * Prepares the environment for test execution.
      */
-    //@BeforeAll
-    @Test
-    @Video
-    @Order(1)
-    public void setup() {
+    @BeforeAll
+    public static void setup() {
         prepareEnv(PROJECTS_PATH, PROJECT_NAME);
     }
 }

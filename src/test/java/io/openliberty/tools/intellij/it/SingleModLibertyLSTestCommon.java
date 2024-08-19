@@ -389,7 +389,7 @@ public abstract class SingleModLibertyLSTestCommon {
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
-        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
+        UIBotTestUtils.waitForIndexing(remoteRobot);
         UIBotTestUtils.openProjectView(remoteRobot);
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.closeLibertyToolWindow(remoteRobot);

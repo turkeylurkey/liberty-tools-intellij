@@ -5,7 +5,6 @@ import com.intellij.remoterobot.RemoteRobot;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
-import org.junit.Assert;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Path;
@@ -14,7 +13,6 @@ import java.time.Duration;
 
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitForIgnoringError;
 
-@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 
 public abstract class SingleModMPLSTestCommon {
     public static final String REMOTEBOT_URL = "http://localhost:8082";
@@ -71,7 +69,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(2)
     public void testInsertCodeSnippetIntoJavaPart() {
         String snippetStr = "mp";
         String snippetChooser = "liveness";
@@ -102,7 +99,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(3)
     public void testMPDiagnosticsInJavaPart() {
 
         String livenessString = "@Liveness";
@@ -140,7 +136,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(4)
     public void testMPQuickFixInJavaFile() {
         String livenessString = "@Liveness";
         String flaggedString = "ServiceLiveHealthCheck";
@@ -180,7 +175,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(5)
     public void testInsertMicroProfileProperty() {
         String cfgSnippet = "mp";
         String cfgNameChooserSnippet = "default-procedures";
@@ -209,7 +203,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(6)
     public void testMicroProfileConfigHover() {
 
         String testHoverTarget = "client.Service";
@@ -239,7 +232,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(7)
     public void testDiagnosticInMicroProfileConfigProperties() {
         String MPCfgSnippet = "mp.health.disable";
         String MPCfgNameChooserSnippet = "procedures";
@@ -272,7 +264,6 @@ public abstract class SingleModMPLSTestCommon {
      */
     @Test
     @Video
-    @Order(8)
     public void testQuickFixInMicroProfileConfigProperties() {
         String MPCfgSnippet = "mp.health.disable";
         String MPCfgNameChooserSnippet = "procedures";
@@ -312,15 +303,14 @@ public abstract class SingleModMPLSTestCommon {
      * @param projectName The name of the project being used.
      */
 
-    public void prepareEnv(String projectPath, String projectName) {
+    public static void prepareEnv(String projectPath, String projectName) {
 
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
-        UIBotTestUtils.waitForIndexingToStop(remoteRobot, 600); // Indexing could take 5 mins. on a slow VM
+        UIBotTestUtils.waitForIndexing(remoteRobot);
         UIBotTestUtils.openProjectView(remoteRobot);
-        System.out.println("prepareEnv");
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
 
@@ -334,7 +324,6 @@ public abstract class SingleModMPLSTestCommon {
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
-        Assert.fail("Forced fail to watch the video... ");
     }
 }
 

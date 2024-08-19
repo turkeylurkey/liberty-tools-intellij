@@ -13,7 +13,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runtime: [ linux, mac, mac13, mac12, windows ]
+        runtime: [ linux, mac, windows ]
         include:
           - runtime: linux
             os: ubuntu-latest
@@ -21,12 +21,6 @@ jobs:
           - runtime: mac
             os: macOS-latest
             reportName: mac-test-report
-          - runtime: mac13
-            os: macOS-13
-            reportName: mac13-test-report
-          - runtime: mac12
-            os: macOS-12
-            reportName: mac12-test-report
           - runtime: windows
             os: windows-latest
             reportName: windows-test-report
