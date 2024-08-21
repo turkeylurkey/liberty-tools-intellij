@@ -1793,7 +1793,7 @@ public class UIBotTestUtils {
      */
     public static void waitForIndexing(RemoteRobot remoteRobot) {
         String xPath = "//div[@class='InlineProgressPanel']";
-        boolean needToWait = waitForIndexingToStart(remoteRobot, xPath, 5);
+        boolean needToWait = waitForIndexingToStart(remoteRobot, xPath, 60);
         if (needToWait) {
             waitForIndexingToStop(remoteRobot, xPath, 600);
         }
