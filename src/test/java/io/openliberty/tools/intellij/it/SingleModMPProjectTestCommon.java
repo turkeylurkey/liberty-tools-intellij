@@ -11,6 +11,8 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.JTreeFixture;
+import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
 import org.junit.jupiter.api.*;
 import org.junit.jupiter.api.condition.EnabledOnOs;
@@ -911,6 +913,9 @@ public abstract class SingleModMPProjectTestCommon {
         UIBotTestUtils.waitForIndexing(remoteRobot);
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.expandLibertyToolWindowProjectTree(remoteRobot, projectName);
+        ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
+        JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+        projTree.expand(projectName, "target", "site");
 
         // Close all open editors.
         // The expansion of the project tree in the Liberty tool window causes the editor tab for

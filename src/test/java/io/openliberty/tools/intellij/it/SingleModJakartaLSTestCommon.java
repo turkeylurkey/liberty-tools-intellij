@@ -191,6 +191,7 @@ public abstract class SingleModJakartaLSTestCommon {
         // expand project directories that are specific to this test app being used by these testcases
         // must be expanded here before trying to open specific files
         projTree.expand(projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        projTree.expand(projectName, "target", "site");
 
         UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
         UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource2", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");

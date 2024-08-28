@@ -400,6 +400,7 @@ public abstract class SingleModLibertyLSTestCommon {
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
         projTree.expand(projectName, "src", "main", "liberty", "config");
+        projTree.expand(projectName, "target", "site");
 
         // open server.xml file
         UIBotTestUtils.openFile(remoteRobot, projectName, "server.xml", projectName, "src", "main", "liberty", "config");

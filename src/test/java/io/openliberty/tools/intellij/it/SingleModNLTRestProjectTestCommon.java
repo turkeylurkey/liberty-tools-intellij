@@ -11,6 +11,8 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.JTreeFixture;
+import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
 import org.junit.jupiter.api.*;
 
@@ -229,6 +231,9 @@ public abstract class SingleModNLTRestProjectTestCommon {
         // IntelliJ does not start building and indexing until the project is open in the UI
         UIBotTestUtils.waitForIndexing(remoteRobot);
         UIBotTestUtils.openLibertyToolWindow(remoteRobot);
+        ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
+        JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+        projTree.expand(projectName, "target", "site");
 
         // Wait for indexing to complete. Once indexing completes and Liberty Tools to take control
         // of the window, it will display the project it detected, or a message stating that no
