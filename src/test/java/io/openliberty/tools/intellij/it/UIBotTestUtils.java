@@ -818,6 +818,8 @@ public class UIBotTestUtils {
             } catch (WaitForConditionTimeoutException wftoe) {
                 error = wftoe;
                 TestUtils.sleepAndIgnoreException(20);
+                keyboard.enterText(" "); // force a change
+                keyboard.hotKey(VK_BACK_SPACE);
                 // click on center of editor pane - allow hover to work on next attempt
                 editorNew.click();
             }
