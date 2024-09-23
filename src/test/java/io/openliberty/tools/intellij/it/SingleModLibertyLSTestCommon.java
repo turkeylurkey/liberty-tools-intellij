@@ -52,7 +52,7 @@ public abstract class SingleModLibertyLSTestCommon {
     @AfterAll
     public static void cleanup() {
         UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.xml", "5");
-        UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.env", "5");
+//        UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.env", "5");
         UIBotTestUtils.closeFileEditorTab(remoteRobot, "bootstrap.properties", "5");
         UIBotTestUtils.closeProjectView(remoteRobot);
         UIBotTestUtils.closeProjectFrame(remoteRobot);
@@ -161,8 +161,11 @@ public abstract class SingleModLibertyLSTestCommon {
         String envCfgValueSnippet = "SIM";
         String expectedServerEnvString = "WLP_LOGGING_CONSOLE_FORMAT=SIMPLE";
 
-        // get focus on server.env tab prior to copy
-        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
+        // open server.env file
+        UIBotTestUtils.openFile(remoteRobot, projectName, "server.env", projectName, "src", "main", "liberty", "config");
+//
+//        // get focus on server.env tab prior to copy
+//        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
 
         // Save the current server.env content.
         UIBotTestUtils.copyWindowContent(remoteRobot);
@@ -174,6 +177,7 @@ public abstract class SingleModLibertyLSTestCommon {
         } finally {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+            UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.env", "5");
         }
     }
 
@@ -215,12 +219,16 @@ public abstract class SingleModLibertyLSTestCommon {
         String testHoverTarget = "LOGLEVEL";
         String hoverExpectedOutcome = "This setting controls the granularity of messages that go to the console. The valid values are INFO, AUDIT, WARNING, ERROR, and OFF. The default is AUDIT. If using with the Eclipse developer tools this must be set to the default.";
 
+        // open server.env file
+        UIBotTestUtils.openFile(remoteRobot, projectName, "server.env", projectName, "src", "main", "liberty", "config");
+
         //mover cursor to hover point
         UIBotTestUtils.hoverInAppServerCfgFile(remoteRobot, testHoverTarget, "server.env", UIBotTestUtils.PopupType.DOCUMENTATION);
         String hoverFoundOutcome = UIBotTestUtils.getHoverStringData(remoteRobot, UIBotTestUtils.PopupType.DOCUMENTATION);
 
         // Validate that the hover action raised the expected hint text
         TestUtils.validateHoverData(hoverExpectedOutcome, hoverFoundOutcome);
+        UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.env", "5");
     }
 
     /**
@@ -327,8 +335,11 @@ public abstract class SingleModLibertyLSTestCommon {
         String incorrectValue = "NONE";
         String expectedHoverData = "The value `NONE` is not valid for the variable `WLP_LOGGING_CONSOLE_FORMAT`.";
 
-        // get focus on server.env tab prior to copy
-        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
+        // open server.env file
+        UIBotTestUtils.openFile(remoteRobot, projectName, "server.env", projectName, "src", "main", "liberty", "config");
+//
+//        // get focus on server.env tab prior to copy
+//        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
 
         // Save the current server.env content.
         UIBotTestUtils.copyWindowContent(remoteRobot);
@@ -343,6 +354,7 @@ public abstract class SingleModLibertyLSTestCommon {
         } finally {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+            UIBotTestUtils.closeFileEditorTab(remoteRobot, "server.env", "5");
         }
 
     }
@@ -399,12 +411,12 @@ public abstract class SingleModLibertyLSTestCommon {
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
         projTree.expand(projectName, "src", "main", "liberty", "config");
+//
+//        // open server.env file
+//        UIBotTestUtils.openFile(remoteRobot, projectName, "server.env", projectName, "src", "main", "liberty", "config");
 
         // open server.xml file
         UIBotTestUtils.openFile(remoteRobot, projectName, "server.xml", projectName, "src", "main", "liberty", "config");
-
-        // open server.env file
-        UIBotTestUtils.openFile(remoteRobot, projectName, "server.env", projectName, "src", "main", "liberty", "config");
 
         // open bootstrap.properties file
         UIBotTestUtils.openFile(remoteRobot, projectName, "bootstrap.properties", projectName, "src", "main", "liberty", "config");
