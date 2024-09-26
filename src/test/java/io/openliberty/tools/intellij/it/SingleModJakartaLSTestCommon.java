@@ -2,6 +2,7 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.ComponentFixture;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
@@ -187,6 +188,10 @@ public abstract class SingleModJakartaLSTestCommon {
         // pre-open project tree before attempting to open files needed by testcases
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+
+        // Open Language Server panel to monitor servers when tests fail.
+        ComponentFixture lsStripe = projectFrame.getStripeButton("Language Servers", "10");
+        if (lsStripe != null) lsStripe.click();
 
         // expand project directories that are specific to this test app being used by these testcases
         // must be expanded here before trying to open specific files
