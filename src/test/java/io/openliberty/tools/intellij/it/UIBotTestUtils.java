@@ -1788,17 +1788,21 @@ public class UIBotTestUtils {
         Locator progressPanelLocator = byXpath(xPath);
         JLabelFixture progressPanelFixture = projectFrame.find(JLabelFixture.class, progressPanelLocator, Duration.ofSeconds(10));
 
-        List<RemoteText> l = progressPanelFixture.findAllText();
-        try {
-            RepeatUtilsKt.waitFor(Duration.ofSeconds(waitTime),
-                    Duration.ofSeconds(1),
-                    "Waiting for indexing message to appear e.g. Indexing Java 17...",
-                    "Indexing did not appear in the Liberty tool window",
-                    () -> !progressPanelFixture.findAllText().isEmpty());
-        } catch (Exception e) {
-            // Did not find the indexing message, just continue
+        boolean running = false;
+        for (int i = 1; i <= 3; i++) {
+            List<RemoteText> l = progressPanelFixture.findAllText();
+            try {
+                RepeatUtilsKt.waitFor(Duration.ofSeconds(waitTime),
+                        Duration.ofSeconds(1),
+                        "Waiting for indexing message to appear e.g. Indexing Java 17...",
+                        "Indexing did not appear in the Liberty tool window",
+                        () -> !progressPanelFixture.findAllText().isEmpty());
+            } catch (Exception e) {
+                // Did not find the indexing message, just continue
+            }
+            running |= !progressPanelFixture.findAllText().isEmpty(); // not empty means it is running
         }
-        return !progressPanelFixture.findAllText().isEmpty(); // not empty means it is running
+        return running;
     }
 
     /**
@@ -1810,11 +1814,14 @@ public class UIBotTestUtils {
         Locator progressPanelLocator = byXpath(xPath);
         JLabelFixture progressPanelFixture = projectFrame.find(JLabelFixture.class, progressPanelLocator, Duration.ofSeconds(10));
 
-        RepeatUtilsKt.waitFor(Duration.ofSeconds(waitTime),
-                Duration.ofSeconds(1),
-                "Waiting for indexing message to disappear e.g. Indexing Java 17...",
-                "Indexing did not appear in the Liberty tool window",
-                () -> progressPanelFixture.findAllText().isEmpty());
+        // try three times in case the panel is empty for a fraction of a second
+        for (int i = 1; i <= 3; i++) {
+            RepeatUtilsKt.waitFor(Duration.ofSeconds(waitTime),
+                    Duration.ofSeconds(1),
+                    "Waiting for indexing message to disappear e.g. Indexing Java 17...",
+                    "Indexing did not appear in the Liberty tool window",
+                    () -> progressPanelFixture.findAllText().isEmpty());
+        }
     }
     /**
      * Returns a concatenated string of all text found in a ComponentFixture object.
