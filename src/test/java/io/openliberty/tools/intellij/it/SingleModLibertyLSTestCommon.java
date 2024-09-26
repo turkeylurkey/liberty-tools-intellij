@@ -2,6 +2,7 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.ComponentFixture;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
@@ -401,6 +402,10 @@ public abstract class SingleModLibertyLSTestCommon {
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
         projTree.expand(projectName, "src", "main", "liberty", "config");
         projTree.expand(projectName, "target", "site");
+
+        // Open Language Server panel to monitor servers when tests fail.
+        ComponentFixture lsStripe = projectFrame.getStripeButton("Language Servers", "10");
+        if (lsStripe != null) lsStripe.click();
 
         // open server.xml file
         UIBotTestUtils.openFile(remoteRobot, projectName, "server.xml", projectName, "src", "main", "liberty", "config");

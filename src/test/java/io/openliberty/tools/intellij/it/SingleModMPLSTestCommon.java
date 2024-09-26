@@ -2,6 +2,7 @@ package io.openliberty.tools.intellij.it;
 
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
+import com.intellij.remoterobot.fixtures.ComponentFixture;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
@@ -325,6 +326,12 @@ public abstract class SingleModMPLSTestCommon {
         // pre-open project tree before attempting to open files needed by testcases
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+        projTree.expand(projectName, "src", "main", "java", "io.openliberty.mp.sample", "health");
+        UIBotTestUtils.waitForIndexing(remoteRobot);
+
+        // Open Language Server panel to monitor servers when tests fail.
+        ComponentFixture lsStripe = projectFrame.getStripeButton("Language Servers", "10");
+        if (lsStripe != null) lsStripe.click();
 
         UIBotTestUtils.openFile(remoteRobot, projectName, "ServiceLiveHealthCheck", projectName, "src", "main", "java", "io.openliberty.mp.sample", "health");
         UIBotTestUtils.openFile(remoteRobot, projectName, "microprofile-config.properties", projectName, "src", "main", "resources", "META-INF");
