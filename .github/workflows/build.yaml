@@ -50,7 +50,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        runtime: [ linux, mac, windows ]
+        runtime: [ linux, mac, mac, mac, mac, mac, mac, mac, mac, mac, mac, windows ]
         include:
           - runtime: linux
             os: ubuntu-latest
