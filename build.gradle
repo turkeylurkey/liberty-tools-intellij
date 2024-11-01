@@ -146,7 +146,7 @@ intellij {
     version = '2024.1.6'
 
     def lsp4ij = project.hasProperty('useLocal') && project.property('useLocal') == 'true' ?
-            file("../lsp4ij/build/distributions/LSP4IJ/") :
+            file("../lsp4ij/build/idea-sandbox/plugins/LSP4IJ/") :
             'com.redhat.devtools.lsp4ij:' + lsp4ijVersion
     plugins = ['java', 'maven', 'gradle-java', 'properties', 'terminal', 'org.jetbrains.idea.maven', 'com.intellij.gradle', lsp4ij]
     updateSinceUntilBuild = false
