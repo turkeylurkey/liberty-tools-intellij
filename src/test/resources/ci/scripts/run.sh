@@ -185,7 +185,8 @@ main() {
         # Run the tests
         echo -e "\n$(${currentTime[@]}): INFO: Running tests..."
         set -o pipefail # using tee requires we use this setting to gather the rc of gradlew
-        ./gradlew test -PuseLocal=$USE_LOCAL_PLUGIN | tee "$JUNIT_OUTPUT_TXT"
+        touch "$JUNIT_OUTPUT_TXT"
+        ./gradlew test -PuseLocal=$USE_LOCAL_PLUGIN
         testRC=$?
         set +o pipefail # reset this option
 
