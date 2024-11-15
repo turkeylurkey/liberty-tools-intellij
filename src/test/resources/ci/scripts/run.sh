@@ -206,6 +206,7 @@ main() {
         ps -ef
         ps -ef | grep -i idea.main
         sleep 10 # Wait a few moments for IDE to shutdown
+        ./gradlew --stop # need to reset environment before restart
     done
 
     # If there were any errors, gather some debug data before exiting.

@@ -13,6 +13,7 @@ import org.junit.jupiter.api.BeforeAll;
 import org.junit.jupiter.api.condition.DisabledOnOs;
 import org.junit.jupiter.api.condition.OS;
 
+import java.net.SocketTimeoutException;
 import java.nio.file.Paths;
 
 
@@ -39,7 +40,8 @@ public class GradleSingleModJakartaLSTest extends SingleModJakartaLSTestCommon {
      * Prepares the environment for test execution.
      */
     @BeforeAll
-    public static void setup() {
+    public static void setup() throws SocketTimeoutException {
         prepareEnv(PROJECTS_PATH, PROJECT_NAME);
+        throw new SocketTimeoutException();
     }
 }
