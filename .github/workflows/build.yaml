@@ -119,7 +119,7 @@ jobs:
         working-directory: ./liberty-tools-intellij
         run: bash ./src/test/resources/ci/scripts/run.sh
       - name: 'ReRun UI integration tests'
-        if: ${{ runner.os == 'Mac' && failure() && steps.run_tests.conclusion == 'failure' }}
+        if: contains(matrix.os, 'mac') && failure()
         id: rerun_tests
         working-directory: ./liberty-tools-intellij
         run: bash ./src/test/resources/ci/scripts/run.sh
