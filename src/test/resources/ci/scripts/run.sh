@@ -136,6 +136,8 @@ startIDE() {
       done
       IDE_PID=$(ps -ef | grep -i idea.main | grep -v grep | awk '{print $2}')
       echo -e "\n$(${currentTime[@]}): INFO: the Intellij IDE pid:" + $IDE_PID
+      ps -ef
+      ps -ef | grep -i idea.main
 }
 
 # Runs UI tests and collects debug data.
@@ -198,7 +200,11 @@ main() {
             break
         fi
         # Shutdown the IDE so that we can retry with a new one
+        ps -f $IDE_PID
         kill -9 $IDE_PID
+        ps -f $IDE_PID
+        ps -ef
+        ps -ef | grep -i idea.main
         sleep 10 # Wait a few moments for IDE to shutdown
     done
 
