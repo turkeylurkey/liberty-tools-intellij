@@ -207,6 +207,15 @@ main() {
         ps -ef | grep -i idea.main
         sleep 10 # Wait a few moments for IDE to shutdown
         ./gradlew --stop # need to reset environment before restart
+        for j in {1..20}; do
+          ide_process=$(ps -f $IDE_PID)
+          echo -e "\n$(${currentTime[@]}): ide_process = ${ide_process}."
+          if [ -z "$ide_process" ]; then
+            # if empty string then process is gone
+            break
+          fi
+          sleep 15
+        done
     done
 
     # If there were any errors, gather some debug data before exiting.
