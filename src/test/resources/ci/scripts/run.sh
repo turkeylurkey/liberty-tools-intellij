@@ -218,7 +218,7 @@ main() {
           fi
           sleep 15
         done
-        shutdown -h now
+        sudo shutdown -h now
     done
 
     # If there were any errors, gather some debug data before exiting.
