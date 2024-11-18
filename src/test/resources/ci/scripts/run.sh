@@ -137,7 +137,9 @@ startIDE() {
       IDE_PID=$(ps -ef | grep -i idea.main | grep -v grep | awk '{print $2}')
       echo -e "\n$(${currentTime[@]}): INFO: the Intellij IDE pid:" + $IDE_PID
       ps -ef
+      sleep 1
       ps -ef | grep -i idea.main
+      sleep 1
 }
 
 # Runs UI tests and collects debug data.
@@ -208,7 +210,7 @@ main() {
         sleep 10 # Wait a few moments for IDE to shutdown
         ./gradlew --stop # need to reset environment before restart
         for j in {1..20}; do
-          ide_process=$(ps -f $IDE_PID)
+          ide_process=$(ps -f $IDE_PID | grep $IDE_PID)
           echo -e "\n$(${currentTime[@]}): ide_process = ${ide_process}."
           if [ -z "$ide_process" ]; then
             # if empty string then process is gone
