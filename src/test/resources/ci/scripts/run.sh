@@ -203,10 +203,24 @@ main() {
         fi
         # Shutdown the IDE so that we can retry with a new one
         ps -f $IDE_PID
+        sleep 1
+        kill -1 $IDE_PID
+        sleep 5
+        ps -f $IDE_PID
+        kill -2 $IDE_PID
+        sleep 5
+        ps -f $IDE_PID
+        kill -3 $IDE_PID
+        sleep 5
+        kill -15 $IDE_PID
+        sleep 5
+        ps -f $IDE_PID
         kill -9 $IDE_PID
+        sleep 5
         ps -f $IDE_PID
         ps -ef
-        ps -ef | grep -i idea.main
+        sleep 5
+        ps -ef | grep -i $IDE_PID
         sleep 10 # Wait a few moments for IDE to shutdown
         ./gradlew --stop # need to reset environment before restart
         for j in {1..20}; do
@@ -225,7 +239,10 @@ main() {
     if [ "$testRC" -ne 0 ]; then
         echo -e "\n$(${currentTime[@]}): ERROR: Failure while running tests. rc: ${testRC}."
         gatherDebugData "$currentLoc"
-        exit -1
+        if [ -z "$ide_process" ]; then
+          exit -1
+        fi
+        exit 23
     fi
 }
 
