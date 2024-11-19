@@ -36,6 +36,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.NoSuchElementException;
+import java.util.function.Consumer;
 
 import static com.intellij.remoterobot.fixtures.dataExtractor.TextDataPredicatesKt.contains;
 import static com.intellij.remoterobot.search.locators.Locators.byXpath;
@@ -2531,6 +2532,14 @@ public class UIBotTestUtils {
             }
         } catch (WaitForConditionTimeoutException e) {
             // The Terminal tab is most likely closed.
+        }
+    }
+
+    public static void findWelcomeFrame(RemoteRobot remoteRobot, Consumer<Object> cleanup) {
+        try {
+            remoteRobot.find(WelcomeFrameFixture.class, Duration.ofMinutes(2));
+        } catch (WaitForConditionTimeoutException e) {
+            cleanup.accept(null);
         }
     }
 }
