@@ -126,13 +126,14 @@ startIDE() {
       echo -e "\n$(${currentTime[@]}): INFO: Waiting for the Intellij IDE to start..."
       callLivenessEndpoint=(curl -s http://localhost:8082)
       count=1
-      while ! ${callLivenessEndpoint[@]} | grep -qF 'Welcome to IntelliJ IDEA'; do
+      while ! ${callLivenessEndpoint[@]} | grep -qF '<link'; do
           if [ $count -eq 24 ]; then
               echo -e "\n$(${currentTime[@]}): ERROR: Timed out waiting for the Intellij IDE Welcome Page to start. Output:"
               exit 12
           fi
           count=`expr $count + 1`
-          echo -e "\n$(${currentTime[@]}): INFO: Continue waiting for the Intellij IDE to start..." && sleep 5
+          echo -e "\n$(${currentTime[@]}): INFO: Continue waiting for the Intellij IDE to start..."
+          sleep 5
       done
       IDE_PID=$(ps -ef | grep -i idea.main | grep -v grep | awk '{print $2}')
       echo -e "\n$(${currentTime[@]}): INFO: the Intellij IDE pid:" + $IDE_PID
