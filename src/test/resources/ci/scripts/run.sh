@@ -184,7 +184,7 @@ main() {
     fi
 
     export JUNIT_OUTPUT_TXT="$currentLoc"/build/junit.out
-    for i in {1..5} do
+    for i in {1..5}; do
         startIDE
         # Run the tests
         echo -e "\n$(${currentTime[@]}): INFO: Running tests..."
@@ -192,7 +192,7 @@ main() {
         ./gradlew test -PuseLocal=$USE_LOCAL_PLUGIN | tee "$JUNIT_OUTPUT_TXT"
         testRC=$?
         set +o pipefail # reset this option
-        if [ "$testRC" -eq "23"]; then
+        if [ "$testRC" -eq "23" ]; then
             # SocketTimeoutException detected, kill the IDE and try again
             kill -1 $IDE_PID # SIGHUP (hang up the phone)
             sleep 5
