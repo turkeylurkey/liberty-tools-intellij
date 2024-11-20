@@ -16,6 +16,7 @@ import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
 import org.junit.jupiter.api.*;
 
+import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
@@ -60,7 +61,7 @@ public abstract class SingleModJakartaLSTestCommon {
      * Cleanup.
      */
     @AfterAll
-    public static void cleanup() {
+    public static void cleanup() throws SocketTimeoutException {
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
 
         UIBotTestUtils.closeFileEditorTab(remoteRobot, "SystemResource.java", "5");
@@ -69,6 +70,7 @@ public abstract class SingleModJakartaLSTestCommon {
         UIBotTestUtils.closeProjectView(remoteRobot);
         UIBotTestUtils.closeProjectFrame(remoteRobot);
         UIBotTestUtils.validateProjectFrameClosed(remoteRobot);
+        throw new SocketTimeoutException("test");
     }
 
     /**
