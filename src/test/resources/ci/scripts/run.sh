@@ -155,6 +155,8 @@ main() {
     id
     gatherResourceUsageData
 
+    ls /usr/bin
+    
     echo -e "\n$(${currentTime[@]}): INFO: Starting integration test run..."
     local currentLoc=$(pwd)
 
