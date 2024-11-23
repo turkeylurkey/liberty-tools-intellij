@@ -16,12 +16,14 @@ import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import io.openliberty.tools.intellij.it.fixtures.WelcomeFrameFixture;
 import org.junit.jupiter.api.*;
 
+import java.net.SocketTimeoutException;
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
 
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitForIgnoringError;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class SingleModLibertyLSTestCommon {
     public static final String REMOTEBOT_URL = "http://localhost:8082";
     public static final RemoteRobot remoteRobot = new RemoteRobot(REMOTEBOT_URL);
@@ -75,6 +77,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(2)
     public void testServerXMLFeatureHover() {
         String testHoverTarget = "mpHealth-4.0";
         String hoverExpectedOutcome = "This feature provides support for the MicroProfile Health specification.";
@@ -93,6 +96,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(3)
     public void testServerXMLNonFeatureHover() {
         String testHoverTarget = "httpEndpoint";
         String hoverExpectedOutcome = "Configuration properties for an HTTP endpoint.";
@@ -111,6 +115,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(4)
     public void testInsertFeatureIntoServerXML() {
         String stanzaSnippet = "el-3";
         String insertedFeature = "<feature>el-3.0</feature>";
@@ -138,6 +143,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(5)
     public void testInsertLibertyConfigElementIntoServerXML() {
         String stanzaSnippet = "log";
         String insertedConfig = "<logging></logging>";
@@ -166,6 +172,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(6)
     public void testInsertLibertyConfigIntoServerEnv() {
         String envCfgSnippet = "WLP_LOGGING_CON";
         String envCfgNameChooserSnippet = "FORMAT";
@@ -194,6 +201,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(7)
     public void testInsertLibertyConfigIntoBootstrapProps() {
         String configNameSnippet = "com.ibm.ws.logging.con";
         String configNameChooserSnippet = "format";
@@ -222,6 +230,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(8)
     public void testServerEnvCfgHover() {
         String testHoverTarget = "LOGLEVEL";
         String hoverExpectedOutcome = "This setting controls the granularity of messages that go to the console. The valid values are INFO, AUDIT, WARNING, ERROR, and OFF. The default is AUDIT. If using with the Eclipse developer tools this must be set to the default.";
@@ -240,6 +249,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(9)
     public void testBootstrapPropsCfgHover() {
 
         String testHoverTarget = "log.level";
@@ -259,6 +269,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(10)
     public void testDiagnosticInServerXML() {
         String stanzaSnippet = "<logging appsWriteJson=wrong\" />";
         String flaggedString = "wrong";
@@ -294,7 +305,8 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
-    public void testQuickFixInServerXML() {
+    @Order(11)
+    public void testQuickFixInServerXML() throws SocketTimeoutException {
         String stanzaSnippet = "<logging appsWriteJson=wrong\" />";
         String flaggedString = "wrong";
         String correctedStanza = "<logging appsWriteJson=\"true\" />";
@@ -323,7 +335,8 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot, true);
         }
-
+        // ***************** +++++++++++++++++ **************
+        throw new SocketTimeoutException("test");
 
     }
 
@@ -332,6 +345,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(12)
     public void testDiagnosticInServerEnv() {
         String envCfgSnippet = "WLP_LOGGING_CON";
         String envCfgNameChooserSnippet = "FORMAT";
@@ -363,6 +377,7 @@ public abstract class SingleModLibertyLSTestCommon {
      */
     @Test
     @Video
+    @Order(13)
     public void testDiagnosticInBootstrapProperties() {
         String configNameSnippet = "com.ibm.ws.logging.con";
         String configNameChooserSnippet = "format";

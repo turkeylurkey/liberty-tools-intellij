@@ -22,6 +22,7 @@ import java.time.Duration;
 
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitForIgnoringError;
 
+@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class SingleModJakartaLSTestCommon {
     public static final String REMOTEBOT_URL = "http://localhost:8082";
     public static final RemoteRobot remoteRobot = new RemoteRobot(REMOTEBOT_URL);
@@ -76,6 +77,7 @@ public abstract class SingleModJakartaLSTestCommon {
      */
     @Test
     @Video
+    @Order(2)
     public void testInsertJakartaCodeSnippetIntoJavaPart() {
         String snippetStr = "res";
         String snippetChooser = "class";
@@ -106,6 +108,7 @@ public abstract class SingleModJakartaLSTestCommon {
      */
     @Test
     @Video
+    @Order(3)
     public void testJakartaDiagnosticsInJavaPart() {
         String publicString = "public Response getProperties() {";
         String privateString = "private Response getProperties() {";
