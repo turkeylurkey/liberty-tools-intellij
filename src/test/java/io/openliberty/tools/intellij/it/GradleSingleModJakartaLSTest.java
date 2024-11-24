@@ -43,7 +43,7 @@ public class GradleSingleModJakartaLSTest extends SingleModJakartaLSTestCommon {
     @Test
     @Video
     @Order(1)
-    public static void setup() {
+    public void setup() {
         prepareEnv(PROJECTS_PATH, PROJECT_NAME);
     }
 }
