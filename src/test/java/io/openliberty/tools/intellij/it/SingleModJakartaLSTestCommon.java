@@ -187,8 +187,10 @@ public abstract class SingleModJakartaLSTestCommon {
      */
 
     public static void prepareEnv(String projectPath, String projectName) {
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon Entry");
         waitForIgnoringError(Duration.ofMinutes(4), Duration.ofSeconds(5), "Wait for IDE to start", "IDE did not start", () -> remoteRobot.callJs("true"));
         UIBotTestUtils.findWelcomeFrame(remoteRobot);
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon point 1");
 
         UIBotTestUtils.importProject(remoteRobot, projectPath, projectName);
         UIBotTestUtils.openProjectView(remoteRobot);
@@ -196,21 +198,26 @@ public abstract class SingleModJakartaLSTestCommon {
         UIBotTestUtils.waitForIndexing(remoteRobot);
         UIBotTestUtils.openAndValidateLibertyToolWindow(remoteRobot, projectName);
         UIBotTestUtils.closeLibertyToolWindow(remoteRobot);
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon point 2");
 
         // pre-open project tree before attempting to open files needed by testcases
         ProjectFrameFixture projectFrame = remoteRobot.find(ProjectFrameFixture.class, Duration.ofMinutes(2));
         JTreeFixture projTree = projectFrame.getProjectViewJTree(projectName);
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon point 3");
 
         // expand project directories that are specific to this test app being used by these testcases
         // must be expanded here before trying to open specific files
         projTree.expand(projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon point 4");
 
         UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
         UIBotTestUtils.openFile(remoteRobot, projectName, "SystemResource2", projectName, "src", "main", "java", "io.openliberty.mp.sample", "system");
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon point 5");
 
 
         // Removes the build tool window if it is opened. This prevents text to be hidden by it.
         UIBotTestUtils.removeToolWindow(remoteRobot, "Build:");
+        TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "SingleModJakartaLSTestCommon Exit");
     }
 }
 
