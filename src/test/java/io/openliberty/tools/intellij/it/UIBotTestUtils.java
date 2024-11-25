@@ -2546,7 +2546,7 @@ public class UIBotTestUtils {
             UIBotTestUtils.closeAllEditorTabs(remoteRobot);
             UIBotTestUtils.closeProjectView(remoteRobot);
             UIBotTestUtils.closeProjectFrame(remoteRobot);
-            TestUtils.sleepAndIgnoreException(10); // takes a few moments to reload the Welcome screen
+            TestUtils.sleepAndIgnoreException(30); // takes about 15s to render the whole Welcome page including the Open button on Mac.
             UIBotTestUtils.validateProjectFrameClosed(remoteRobot);
             TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "findWelcomeFrame point 4");
         }
