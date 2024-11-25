@@ -2432,7 +2432,7 @@ public class UIBotTestUtils {
     public static boolean inWelcomeFrame(RemoteRobot remoteRobot) {
         boolean inWelcomeFrame = false;
         try {
-            remoteRobot.find(WelcomeFrameFixture.class, Duration.ofSeconds(2));
+            remoteRobot.find(WelcomeFrameFixture.class, Duration.ofSeconds(5));
             inWelcomeFrame = true;
         } catch (Exception e) {
             // Not in welcome frame.
@@ -2450,7 +2450,7 @@ public class UIBotTestUtils {
     public static boolean inProjectFrame(RemoteRobot remoteRobot) {
         boolean inProjectFrame = false;
         try {
-            remoteRobot.find(ProjectFrameFixture.class, Duration.ofSeconds(2));
+            remoteRobot.find(ProjectFrameFixture.class, Duration.ofSeconds(5));
             inProjectFrame = true;
         } catch (Exception e) {
             // Not in project frame.
@@ -2546,6 +2546,7 @@ public class UIBotTestUtils {
             UIBotTestUtils.closeAllEditorTabs(remoteRobot);
             UIBotTestUtils.closeProjectView(remoteRobot);
             UIBotTestUtils.closeProjectFrame(remoteRobot);
+            TestUtils.sleepAndIgnoreException(10); // takes a few moments to reload the Welcome screen
             UIBotTestUtils.validateProjectFrameClosed(remoteRobot);
             TestUtils.printTrace(TestUtils.TraceSevLevel.INFO, "findWelcomeFrame point 4");
         }
