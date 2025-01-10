@@ -9,13 +9,15 @@
  *******************************************************************************/
 package io.openliberty.tools.intellij.it;
 
-import org.junit.jupiter.api.BeforeAll;
+import com.automation.remarks.junit5.Video;
+import org.junit.jupiter.api.*;
 
 import java.nio.file.Paths;
 
 /**
  * Tests that use a single module non Liberty Tools compliant REST Maven project.
  */
+//@TestMethodOrder(MethodOrderer.MethodName.class)
 public class MavenSingleModNLTRestProjectTest extends SingleModNLTRestProjectTestCommon {
 
     /**
@@ -31,6 +33,9 @@ public class MavenSingleModNLTRestProjectTest extends SingleModNLTRestProjectTes
     /**
      * Prepares the environment for test execution.
      */
+//    @Test
+//    @Video
+//    @Order(1)
     @BeforeAll
     public static void setup() {
         prepareEnv(PROJECTS_PATH, SM_NLT_REST_PROJECT_NAME);

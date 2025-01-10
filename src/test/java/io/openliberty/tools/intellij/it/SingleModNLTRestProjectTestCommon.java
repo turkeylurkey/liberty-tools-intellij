@@ -25,6 +25,7 @@ import static org.junit.jupiter.api.Assertions.fail;
 /**
  * Holds common tests that use a single module non Liberty Tools compliant REST project.
  */
+//@TestMethodOrder(MethodOrderer.OrderAnnotation.class)
 public abstract class SingleModNLTRestProjectTestCommon {
 
     /**
@@ -145,12 +146,18 @@ public abstract class SingleModNLTRestProjectTestCommon {
         buildFileName = name;
     }
 
-    /**
-     * Tests manually Adding/Removing project from the tool window using the Liberty add/remove
-     * options available through search everywhere panel.
-     */
     @Test
     @Video
+    public void testSetup() {
+        prepareEnv(Paths.get("src", "test", "resources", "projects", "gradle").toAbsolutePath().toString(), "singleModGradleRESTNoLTXmlCfg");
+    }
+        /**
+         * Tests manually Adding/Removing project from the tool window using the Liberty add/remove
+         * options available through search everywhere panel.
+         */
+    @Test
+    @Video
+    //@Order(2)
     public void testManualProjectAddRemoveActionUsingSearch() {
         // Validate that the Liberty tool window project tree is not showing. No projects are expected.
         UIBotTestUtils.waitForLTWNoProjectDetectedMsg(remoteRobot, 10);
@@ -189,6 +196,7 @@ public abstract class SingleModNLTRestProjectTestCommon {
      */
     @Test
     @Video
+    //@Order(3)
     public void testsRefreshProjectWithServerXmlOnly() {
         // Validate that the Liberty tool window project tree is not showing. No projects are expected.
         UIBotTestUtils.waitForLTWNoProjectDetectedMsg(remoteRobot, 10);
@@ -232,6 +240,7 @@ public abstract class SingleModNLTRestProjectTestCommon {
      */
     @Test
     @Video
+    //@Order(4)
     public void testsRefreshProjectWithLTBuildCfgOnlyWithBldScriptBlock() {
         testsRefreshProjectWithLTBuildCfgOnly(getBuildFileName());
     }
