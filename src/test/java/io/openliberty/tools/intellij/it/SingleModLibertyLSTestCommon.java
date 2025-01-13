@@ -1,5 +1,5 @@
 /*******************************************************************************
- * Copyright (c) 2023, 2024 IBM Corporation.
+ * Copyright (c) 2023, 2025 IBM Corporation.
  *
  * This program and the accompanying materials are made available under the
  * terms of the Eclipse Public License v. 2.0 which is available at
@@ -12,12 +12,17 @@ package io.openliberty.tools.intellij.it;
 import com.automation.remarks.junit5.Video;
 import com.intellij.remoterobot.RemoteRobot;
 import com.intellij.remoterobot.fixtures.JTreeFixture;
+import com.intellij.remoterobot.utils.Keyboard;
 import io.openliberty.tools.intellij.it.fixtures.ProjectFrameFixture;
 import org.junit.jupiter.api.*;
 
 import java.nio.file.Path;
 import java.nio.file.Paths;
 import java.time.Duration;
+import java.util.Map;
+
+import static java.awt.event.KeyEvent.VK_CONTROL;
+import static java.awt.event.KeyEvent.VK_SPACE;
 
 import static com.intellij.remoterobot.utils.RepeatUtilsKt.waitForIgnoringError;
 
@@ -163,11 +168,12 @@ public abstract class SingleModLibertyLSTestCommon {
 
     /**
      * Tests liberty-ls type ahead support in server.env for a
-     * Liberty Server Configuration Stanza
+     * Liberty Server Configuration Stanza and
+     * providing completion suggestions in uppercase letters.
      */
     @Test
     @Video
-    public void testInsertLibertyConfigIntoServerEnv() {
+    public void testInsertLibertyConfigIntoServerEnvForCapitalCase() {
         String envCfgSnippet = "WLP_LOGGING_CON";
         String envCfgNameChooserSnippet = "FORMAT";
         String envCfgValueSnippet = "SIM";
@@ -190,12 +196,69 @@ public abstract class SingleModLibertyLSTestCommon {
     }
 
     /**
-     * Tests liberty-ls type ahead support in bootstrap.properties for a
-     * Liberty Server Configuration booststrap.properties entry
+     * Tests Liberty-LS support in server.env for
+     * providing completion suggestions in lowercase letters.
      */
     @Test
     @Video
-    public void testInsertLibertyConfigIntoBootstrapProps() {
+    public void testInsertLibertyConfigIntoServerEnvForLowerCase() {
+        String envCfgSnippetLowerCase = "wlp_logging_con";
+        String envCfgNameChooserSnippet = "FORMAT";
+        String envCfgValueSnippet = "sim";
+        String expectedServerEnvString = "WLP_LOGGING_CONSOLE_FORMAT=SIMPLE";
+
+        // get focus on server.env tab prior to copy
+        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
+
+        // Save the current server.env content.
+        UIBotTestUtils.copyWindowContent(remoteRobot);
+
+        try {
+            UIBotTestUtils.insertConfigIntoConfigFile(remoteRobot, "server.env", envCfgSnippetLowerCase, envCfgNameChooserSnippet, envCfgValueSnippet, true);
+            Path pathToServerEnv = Paths.get(projectsPath, projectName, "src", "main", "liberty", "config", "server.env");
+            TestUtils.validateStringInFile(pathToServerEnv.toString(), expectedServerEnvString);
+        } finally {
+            // Replace server.xml content with the original content
+            UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+        }
+    }
+
+    /**
+     * Tests Liberty-LS support in server.env for providing completion
+     * suggestions in a mix of uppercase and lowercase letters.
+     */
+    @Test
+    @Video
+    public void testInsertLibertyConfigIntoServerEnvForMixOfCases() {
+        String envCfgSnippetMixCase = "wLp_LOgginG_coN";
+        String envCfgNameChooserSnippet = "FORMAT";
+        String envCfgValueSnippet = "sIM";
+        String expectedServerEnvString = "WLP_LOGGING_CONSOLE_FORMAT=SIMPLE";
+
+        // get focus on server.env tab prior to copy
+        UIBotTestUtils.clickOnFileTab(remoteRobot, "server.env");
+
+        // Save the current server.env content.
+        UIBotTestUtils.copyWindowContent(remoteRobot);
+
+        try {
+            UIBotTestUtils.insertConfigIntoConfigFile(remoteRobot, "server.env", envCfgSnippetMixCase, envCfgNameChooserSnippet, envCfgValueSnippet, true);
+            Path pathToServerEnv = Paths.get(projectsPath, projectName, "src", "main", "liberty", "config", "server.env");
+            TestUtils.validateStringInFile(pathToServerEnv.toString(), expectedServerEnvString);
+        } finally {
+            // Replace server.xml content with the original content
+            UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+        }
+    }
+
+    /**
+     * Tests liberty-ls type ahead support in bootstrap.properties for a
+     * Liberty Server Configuration bootstrap.properties entry and
+     * providing completion suggestions in lowercase letters.
+     */
+    @Test
+    @Video
+    public void testInsertLibertyConfigIntoBootstrapPropsForLowerCase() {
         String configNameSnippet = "com.ibm.ws.logging.con";
         String configNameChooserSnippet = "format";
         String configValueSnippet = "TBA";
@@ -215,6 +278,82 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
         }
+    }
+
+    /**
+     * Tests Liberty-LS support in bootstrap.properties for
+     * providing completion suggestions in capital case letters.
+     */
+    @Test
+    @Video
+    public void testInsertLibertyConfigIntoBootstrapPropsForCapitalCase() {
+        String configNameSnippetUpperCase = "COM.IBM.WS.LOGGING.CON";
+        String configNameChooserSnippet = "format";
+        String configValueSnippet = "tba";
+        String expectedBootstrapPropsString = "com.ibm.ws.logging.console.format=TBASIC";
+
+        // get focus on bootstrap.properties tab prior to copy
+        UIBotTestUtils.clickOnFileTab(remoteRobot, "bootstrap.properties");
+
+        // Save the current bootstrap.properties content.
+        UIBotTestUtils.copyWindowContent(remoteRobot);
+
+        try {
+            UIBotTestUtils.insertConfigIntoConfigFile(remoteRobot, "bootstrap.properties", configNameSnippetUpperCase, configNameChooserSnippet, configValueSnippet, true);
+            Path pathToBootstrapProps = Paths.get(projectsPath, projectName, "src", "main", "liberty", "config", "bootstrap.properties");
+            TestUtils.validateStringInFile(pathToBootstrapProps.toString(), expectedBootstrapPropsString);
+        } finally {
+            // Replace server.xml content with the original content
+            UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+        }
+    }
+
+    /**
+     * Tests Liberty-LS support in bootstrap.properties for providing completion
+     * suggestions in a mix of uppercase and lowercase letters.
+     */
+    @Test
+    @Video
+    public void testInsertLibertyConfigIntoBootstrapPropsForMixOfCases() {
+        String configNameSnippetMixCase = "CoM.Ibm.wS.LoGginG.cON";
+        String configNameChooserSnippet = "format";
+        String configValueSnippet = "Tba";
+        String expectedBootstrapPropsString = "com.ibm.ws.logging.console.format=TBASIC";
+
+        // get focus on bootstrap.properties tab prior to copy
+        UIBotTestUtils.clickOnFileTab(remoteRobot, "bootstrap.properties");
+
+        // Save the current bootstrap.properties content.
+        UIBotTestUtils.copyWindowContent(remoteRobot);
+
+        try {
+            UIBotTestUtils.insertConfigIntoConfigFile(remoteRobot, "bootstrap.properties", configNameSnippetMixCase, configNameChooserSnippet, configValueSnippet, true);
+            Path pathToBootstrapProps = Paths.get(projectsPath, projectName, "src", "main", "liberty", "config", "bootstrap.properties");
+            TestUtils.validateStringInFile(pathToBootstrapProps.toString(), expectedBootstrapPropsString);
+        } finally {
+            // Replace server.xml content with the original content
+            UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+        }
+    }
+
+    /**
+     * Test to Ensure that relevant completion values (e.g., SIMPLE, ADVANCED)
+     * are displayed and prioritized at the top of the list in server.env.
+     */
+    @Test
+    @Video
+    public void testCompletionValuesInServerEnv() {
+        runCompletionTest("server.env", "WLP_LOGGING_CONSOLE_FORMAT=", new String[]{"DEV", "JSON", "SIMPLE", "TBASIC"}, 4);
+    }
+
+    /**
+     * Test to Ensure that relevant completion values (e.g., AUDIT, ERROR)
+     * are displayed and prioritized at the top of the list in bootstrap.properties
+     */
+    @Test
+    @Video
+    public void testCompletionValuesInBootstrapProperties() {
+        runCompletionTest("bootstrap.properties", "com.ibm.ws.logging.console.log.level=", new String[]{"AUDIT", "ERROR", "INFO", "OFF", "WARNING"}, 5);
     }
 
     /**
@@ -286,7 +425,6 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
         }
-
     }
 
     /**
@@ -324,8 +462,6 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot, true);
         }
-
-
     }
 
     /**
@@ -356,7 +492,6 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
         }
-
     }
 
     /**
@@ -387,7 +522,50 @@ public abstract class SingleModLibertyLSTestCommon {
             // Replace server.xml content with the original content
             UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
         }
+    }
 
+    /**
+     * Helper method to test completion values in a specified file.
+     *
+     * @param fileName                 the name of the file to focus on
+     * @param propertyKeySnippet       the property key snippet to type
+     * @param expectedCompletionValues the expected completion values
+     * @param maxPosition              the maximum position for the completion values
+     */
+    private void runCompletionTest(String fileName, String propertyKeySnippet, String[] expectedCompletionValues, int maxPosition) {
+        Keyboard keyboard = new Keyboard(remoteRobot);
+
+        // Get focus on the specified file tab prior to copy
+        UIBotTestUtils.clickOnFileTab(remoteRobot, fileName);
+
+        // Save the current file content
+        UIBotTestUtils.copyWindowContent(remoteRobot);
+
+        // Delete the current file content
+        UIBotTestUtils.clearWindowContent(remoteRobot);
+
+        // Type the property key
+        keyboard.enterText(propertyKeySnippet);
+
+        // Trigger code completion
+        keyboard.hotKey(VK_CONTROL, VK_SPACE);
+
+        try {
+            // Check if the expected value appears in the top of the completion pop-up
+            Map<String, Integer> textPositions = ProjectFrameFixture.findAllTextPositions(remoteRobot);
+
+            // Verify each expected value's position
+            for (String expectedValue : expectedCompletionValues) {
+                Integer position = textPositions.get(expectedValue);
+                Assertions.assertNotNull(position,
+                        "Text '" + expectedValue + "' did not appear in the completion suggestion pop-up window.");
+                Assertions.assertTrue(position >= 0 && position < maxPosition,
+                        "Text '" + expectedValue + "' is at position " + position + " and is not in the top " + maxPosition + ".");
+            }
+        } finally {
+            // Replace the file content with the original content
+            UIBotTestUtils.pasteOnActiveWindow(remoteRobot);
+        }
     }
 
     /**
