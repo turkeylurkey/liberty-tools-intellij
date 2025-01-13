@@ -45,19 +45,21 @@ public class LibertyModules {
      * @param module LibertyModule
      */
     public LibertyModule addLibertyModule(LibertyModule module) {
-        if (libertyModules.containsKey(module.getBuildFile())) {
-            // Update existing Liberty project, projectType module, name and validContainerVersion
-            // Do not update the build file (key), debugMode, shellWidget or customStartParams since
-            // they may modify saved run configs.
-            LibertyModule existing = libertyModules.get(module.getBuildFile());
-            existing.setProject(module.getProject());
-            existing.setProjectType(module.getProjectType());
-            existing.setName(module.getName());
-            existing.setValidContainerVersion(module.isValidContainerVersion());
-        } else {
-            libertyModules.put(module.getBuildFile(), module);
+        synchronized(libertyModules) {
+            if (libertyModules.containsKey(module.getBuildFile())) {
+                // Update existing Liberty project, projectType module, name and validContainerVersion
+                // Do not update the build file (key), debugMode, shellWidget or customStartParams since
+                // they may modify saved run configs.
+                LibertyModule existing = libertyModules.get(module.getBuildFile());
+                existing.setProject(module.getProject());
+                existing.setProjectType(module.getProjectType());
+                existing.setName(module.getName());
+                existing.setValidContainerVersion(module.isValidContainerVersion());
+            } else {
+                libertyModules.put(module.getBuildFile(), module);
+            }
+            return libertyModules.get(module.getBuildFile());
         }
-        return libertyModules.get(module.getBuildFile());
     }
 
     /**
@@ -67,7 +69,9 @@ public class LibertyModules {
      * @return LibertyModule
      */
     public LibertyModule getLibertyModule(VirtualFile buildFile) {
-        return libertyModules.get(buildFile);
+        synchronized(libertyModules) {
+            return libertyModules.get(buildFile);
+        }
     }
 
     /**
@@ -77,8 +81,10 @@ public class LibertyModules {
      * @return LibertyModule
      */
     public LibertyModule getLibertyProjectFromString(String buildFile) {
-        VirtualFile vBuildFile = VfsUtil.findFile(Paths.get(buildFile), true);
-        return libertyModules.get(vBuildFile);
+        synchronized(libertyModules) {
+            VirtualFile vBuildFile = VfsUtil.findFile(Paths.get(buildFile), true);
+            return libertyModules.get(vBuildFile);
+        }
     }
 
     /**
@@ -127,7 +133,9 @@ public class LibertyModules {
      * @param libertyModule
      */
     public void removeLibertyModule(LibertyModule libertyModule) {
-        libertyModules.remove(libertyModule.getBuildFile());
+        synchronized(libertyModules) {
+            libertyModules.remove(libertyModule.getBuildFile());
+        }
     }
 
     /**
