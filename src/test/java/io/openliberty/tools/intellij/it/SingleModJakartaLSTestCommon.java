@@ -66,7 +66,7 @@ public abstract class SingleModJakartaLSTestCommon {
      * Tests Jakarta Language Server code snippet support in a Java source file
      */
     @Test
-    @Order(2)
+    @Order(3)
     @Video
     public void testInsertJakartaCodeSnippetIntoJavaPart() {
         String snippetStr = "res";
@@ -97,7 +97,7 @@ public abstract class SingleModJakartaLSTestCommon {
      * Tests Jakarta Language Server diagnostic support in a Java source file
      */
     @Test
-    @Order(3)
+    @Order(2)
     @Video
     public void testJakartaDiagnosticsInJavaPart() {
         String publicString = "public Response getProperties() {";
