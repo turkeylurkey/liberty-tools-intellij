@@ -406,6 +406,7 @@ public abstract class SingleModLibertyLSTestCommon {
 
         Path pathToServerXML = null;
         pathToServerXML = Paths.get(projectsPath, projectName, "src", "main", "liberty", "config", "server.xml");
+        System.out.println("path="+pathToServerXML);
 
         // get focus on server.xml tab prior to copy
         UIBotTestUtils.clickOnFileTab(remoteRobot, "server.xml");
