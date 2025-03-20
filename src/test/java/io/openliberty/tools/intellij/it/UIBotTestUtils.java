@@ -1063,7 +1063,7 @@ public class UIBotTestUtils {
                 keyboard.hotKey(VK_DELETE);
 
                 for (int pointer = 0; pointer < configValueSnippet.length(); pointer++) {
-                    keyboard.enterText(configValueSnippet.substring(pointer,pointer));
+                    keyboard.enterText(configValueSnippet.substring(pointer,pointer + 1));
                     //keyboard.enterText(configValueSnippet);
                     TestUtils.sleepAndIgnoreException(1);
                 }
