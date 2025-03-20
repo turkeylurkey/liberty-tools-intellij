@@ -1062,7 +1062,11 @@ public class UIBotTestUtils {
                 editorNew.findText("false").doubleClick();
                 keyboard.hotKey(VK_DELETE);
 
-                keyboard.enterText(configValueSnippet);
+                for (int pointer = 0; pointer < configValueSnippet.length(); pointer++) {
+                    keyboard.enterText(configValueSnippet.substring(pointer,pointer));
+                    //keyboard.enterText(configValueSnippet);
+                    TestUtils.sleepAndIgnoreException(1);
+                }
 
                 if (completeWithPopup) {
                     // Select the appropriate value completion suggestion in the pop-up window that is automatically
