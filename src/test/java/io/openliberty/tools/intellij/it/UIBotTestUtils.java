@@ -978,7 +978,10 @@ public class UIBotTestUtils {
         // since we know this is a new empty file, go to position 1,1
         goToLineAndColumn(remoteRobot, keyboard, 1, 1);
 
-        keyboard.enterText(snippetSubString);
+        for (int pointer = 0; pointer < snippetSubString.length(); pointer++) {
+            keyboard.enterText(snippetSubString.substring(pointer, pointer+1));
+            TestUtils.sleepAndIgnoreException(1);
+        }
 
         // Select the appropriate completion suggestion in the pop-up window that is automatically
         // opened as text is typed. Avoid hitting ctrl + space as it has the side effect of selecting
